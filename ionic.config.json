@@ -1,0 +1,7 @@
+{
+  "name": "fauzi-tomyum",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
