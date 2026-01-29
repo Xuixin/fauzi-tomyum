@@ -1,2 +1,149 @@
 // For information on how to create your own theme, please refer to:
 // https://ionicframework.com/docs/theming/
+@font-face {
+  font-family: "LINE Seed Sans Thai";
+  src:
+    url("/assets/font/LINE_SEED/Web/WOFF2/LINESeedSansTH_W_Th.woff2")
+      format("woff2"),
+    url("/assets/font/LINE_SEED/Web/WOFF/LINESeedSansTH_W_Th.woff")
+      format("woff"),
+    url("/assets/font/LINE_SEED/Web/EOT/LINESeedSansTH_W_Th.eot")
+      format("embedded-opentype");
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "LINE Seed Sans Thai";
+  src:
+    url("/assets/font/LINE_SEED/Web/WOFF2/LINESeedSansTH_W_Rg.woff2")
+      format("woff2"),
+    url("/assets/font/LINE_SEED/Web/WOFF/LINESeedSansTH_W_Rg.woff")
+      format("woff"),
+    url("/assets/font/LINE_SEED/Web/EOT/LINESeedSansTH_W_Rg.eot")
+      format("embedded-opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "LINE Seed Sans Thai";
+  src:
+    url("/assets/font/LINE_SEED/Web/WOFF2/LINESeedSansTH_W_Bd.woff2")
+      format("woff2"),
+    url("/assets/font/LINE_SEED/Web/WOFF/LINESeedSansTH_W_Bd.woff")
+      format("woff"),
+    url("/assets/font/LINE_SEED/Web/EOT/LINESeedSansTH_W_Bd.eot")
+      format("embedded-opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "LINE Seed Sans Thai";
+  src:
+    url("/assets/font/LINE_SEED/Web/WOFF2/LINESeedSansTH_W_He.woff2")
+      format("woff2"),
+    url("/assets/font/LINE_SEED/Web/WOFF/LINESeedSansTH_W_He.woff")
+      format("woff"),
+    url("/assets/font/LINE_SEED/Web/EOT/LINESeedSansTH_W_He.eot")
+      format("embedded-opentype");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "LINE Seed Sans Thai";
+  src:
+    url("/assets/font/LINE_SEED/Web/WOFF2/LINESeedSansTH_W_XBd.woff2")
+      format("woff2"),
+    url("/assets/font/LINE_SEED/Web/WOFF/LINESeedSansTH_W_XBd.woff")
+      format("woff"),
+    url("/assets/font/LINE_SEED/Web/EOT/LINESeedSansTH_W_XBd.eot")
+      format("embedded-opentype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /** primary **/
+  --ion-color-primary: #0192fb;
+  --ion-color-primary-rgb: 1, 146, 251;
+  --ion-color-primary-contrast: #fff;
+  --ion-color-primary-contrast-rgb: 0, 0, 0;
+  --ion-color-primary-shade: #0180dd;
+  --ion-color-primary-tint: #1a9dfb;
+
+  /** secondary **/
+  --ion-color-secondary: #3dc2ff;
+  --ion-color-secondary-rgb: 61, 194, 255;
+  --ion-color-secondary-contrast: #ffffff;
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: #36abe0;
+  --ion-color-secondary-tint: #50c8ff;
+
+  /** tertiary **/
+  --ion-color-tertiary: #5260ff;
+  --ion-color-tertiary-rgb: 82, 96, 255;
+  --ion-color-tertiary-contrast: #ffffff;
+  --ion-color-tertiary-contrast-rgb: 255, 255, 255;
+  --ion-color-tertiary-shade: #4854e0;
+  --ion-color-tertiary-tint: #6370ff;
+
+  /** success **/
+  --ion-color-success: #2dd36f;
+  --ion-color-success-rgb: 45, 211, 111;
+  --ion-color-success-contrast: #ffffff;
+  --ion-color-success-contrast-rgb: 255, 255, 255;
+  --ion-color-success-shade: #28ba62;
+  --ion-color-success-tint: #42d77d;
+
+  /** warning **/
+  --ion-color-warning: #ffc409;
+  --ion-color-warning-rgb: 255, 196, 9;
+  --ion-color-warning-contrast: #000000;
+  --ion-color-warning-contrast-rgb: 0, 0, 0;
+  --ion-color-warning-shade: #e0ac08;
+  --ion-color-warning-tint: #ffca22;
+
+  /** danger **/
+  --ion-color-danger: #eb445a;
+  --ion-color-danger-rgb: 235, 68, 90;
+  --ion-color-danger-contrast: #ffffff;
+  --ion-color-danger-contrast-rgb: 255, 255, 255;
+  --ion-color-danger-shade: #cf3c4f;
+  --ion-color-danger-tint: #ed576b;
+
+  /** dark **/
+  --ion-color-dark: #222428;
+  --ion-color-dark-rgb: 34, 36, 40;
+  --ion-color-dark-contrast: #ffffff;
+  --ion-color-dark-contrast-rgb: 255, 255, 255;
+  --ion-color-dark-shade: #1e2023;
+  --ion-color-dark-tint: #383a3e;
+
+  /** medium **/
+  --ion-color-medium: #92949c;
+  --ion-color-medium-rgb: 146, 148, 156;
+  --ion-color-medium-contrast: #ffffff;
+  --ion-color-medium-contrast-rgb: 255, 255, 255;
+  --ion-color-medium-shade: #808289;
+  --ion-color-medium-tint: #9d9fa6;
+
+  /** light **/
+  --ion-color-light: #f4f5f8;
+  --ion-color-light-rgb: 244, 245, 248;
+  --ion-color-light-contrast: #000000;
+  --ion-color-light-contrast-rgb: 0, 0, 0;
+  --ion-color-light-shade: #d7d8da;
+  --ion-color-light-tint: #f5f6f9;
+}
+
+$colors: (
+  primary: #0192fb,
+);
