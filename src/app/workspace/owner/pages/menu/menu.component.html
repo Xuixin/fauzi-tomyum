@@ -1,0 +1,240 @@
+<app-header [header]="header" [backUrl]="'/store'"></app-header>
+
+<ion-content class="ion-no-padding overflow-y-hidden!">
+  <div class="min-h-dvh overflow-y-hidden!">
+    <div class="max-w-7xl mx-auto p-8">
+      <!-- Stats Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <p-card *ngFor="let card of statusCard" styleClass="border border-gray-200 shadow-sm">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-gray-600 mb-1">{{ card.title }}</p>
+              <p class="text-2xl font-bold text-gray-900">{{ card.count }}</p>
+            </div>
+            <div class="w-12 h-12 rounded-lg flex items-center justify-center" [ngClass]="card.iconBackground">
+              <ion-icon [name]="card.icon" class="text-2xl" [ngClass]="card.iconColor"></ion-icon>
+            </div>
+          </div>
+        </p-card>
+      </div>
+
+      <!-- Toolbar -->
+      <p-toolbar class="bg-white  !border-gray-200">
+        <form [formGroup]="filterForm">
+          <div class="p-toolbar-group-start !flex items-center gap-4 flex-1 flex-wrap">
+          <!-- Search Input -->
+          <p-iconfield class="p-input-icon-left  max-w-md">
+            <p-inputicon class="pi pi-search" />
+            <input
+              type="text"
+              pInputText
+              placeholder="ค้นหาชื่อเมนู..."
+              formControlName="searchText"
+              class="w-full"
+            />
+          </p-iconfield>
+
+          <!-- Filters -->
+          <div class="flex max-w-md gap-2" [formGroup]="filterForm">
+            <!-- Type AutoComplete Filter -->
+            <p-autocomplete
+              formControlName="selectedType"
+              [suggestions]="filteredTypeOptions"
+              (completeMethod)="searchType($event)"
+              placeholder="ทุกประเภท"
+              optionLabel="label"
+              [dropdown]="true"
+              [showClear]="true"
+              (onClear)="onClearTypeFilter()"
+              class="w-full max-w-40"
+              inputStyleClass="text-sm"
+            >
+              <ng-template let-option #item>
+                <div class="flex items-center gap-2">
+                  <i [class]="option.icon"></i>
+                  <span>{{ option.label }}</span>
+                </div>
+              </ng-template>
+            </p-autocomplete>
+
+            <!-- Status AutoComplete Filter -->
+            <p-autocomplete
+              formControlName="selectedStatus"
+              [suggestions]="filteredStatusOptions"
+              (completeMethod)="searchStatus($event)"
+              placeholder="ทุกสถานะ"
+              optionLabel="label"
+              [dropdown]="true"
+              [showClear]="true"
+              (onClear)="onClearStatusFilter()"
+              styleClass="w-full max-w-40"
+              inputStyleClass="text-sm"
+            >
+              <ng-template let-option #item>
+                <div class="flex items-center gap-2">
+                  <i [class]="option.icon"></i>
+                  <span>{{ option.label }}</span>
+                </div>
+              </ng-template>
+            </p-autocomplete>
+          </div>
+        </div>
+        </form>
+
+        <div class="p-toolbar-group-end">
+          <p-button
+            label="เพิ่มเมนูใหม่"
+            icon="pi pi-plus"
+            severity="primary"
+            (onClick)="openCreateUserWorkflow()"
+          ></p-button>
+        </div>
+      </p-toolbar>
+
+
+
+      <!-- Menu Cards Grid Header -->
+      <div class="mb-4 flex items-center justify-between">
+        <h2 class="text-lg font-semibold page-title text-left!">
+          รายการเมนู
+          <span class="text-sm text-gray-500">({{ filteredMenus.length || 0 }} รายการ)</span>
+        </h2>
+      </div>
+
+      <!-- Menu Cards Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <p-card
+          *ngFor="let menu of filteredMenus"
+          styleClass="border border-gray-200 hover:shadow-lg transition-all duration-200 cursor-pointer group overflow-hidden"
+        >
+          <ng-template pTemplate="header">
+            <!-- Image Section -->
+            <div class="relative w-full max-h-32 aspect-square bg-gray-100 overflow-hidden">
+              <img
+                *ngIf="menu.image_url"
+                [src]="menu.image_url"
+                [alt]="menu.name"
+                class="w-full h-full  object-cover group-hover:scale-105 transition-transform duration-200"
+              />
+              <div
+                *ngIf="!menu.image_url"
+                class="w-full h-full flex items-center justify-center"
+              >
+                <i class="pi pi-image text-gray-300 text-6xl"></i>
+              </div>
+
+              <!-- Status Badge Overlay -->
+              <div class="absolute top-3 left-3">
+                <p-tag
+                  [value]="menu.is_active ? 'เปิดขาย' : 'ปิดขาย'"
+                  [severity]="menu.is_active ? 'success' : 'secondary'"
+                  class="backdrop-blur-sm"
+                  [icon]="menu.is_active ? 'pi pi-check' : 'pi pi-times'"
+                >
+
+                </p-tag>
+              </div>
+
+              <!-- Type Badge Overlay -->
+              <div class="absolute top-3 right-3">
+                <p-tag
+                  [value]="menu.type === 'food' ? 'อาหาร' : 'เครื่องดื่ม'"
+                  [severity]="menu.type === 'food' ? 'info' : 'warn'"
+                  styleClass="backdrop-blur-sm"
+                >
+                  <ng-template pTemplate="icon">
+                    <ion-icon
+                      [name]="menu.type === 'food' ? 'fast-food' : 'cafe'"
+                      class="text-sm mr-1.5"
+                    ></ion-icon>
+                  </ng-template>
+                </p-tag>
+              </div>
+            </div>
+          </ng-template>
+
+          <!-- Content Section -->
+          <ng-template pTemplate="content">
+            <!-- Title -->
+            <h3 class="font-semibold text-gray-900 text-base mb-2 line-clamp-2 min-h-12">
+              {{ menu.name }}
+            </h3>
+
+            <!-- Price -->
+            <div class="flex items-baseline gap-2 mb-3">
+              <span class="text-xl font-bold text-blue-600">
+                ฿{{ getMinPrice(menu) }}
+              </span>
+              <span
+                *ngIf="getMinPrice(menu) !== getMaxPrice(menu)"
+                class="text-sm font-medium text-gray-500"
+              >
+                - ฿{{ getMaxPrice(menu) }}
+              </span>
+            </div>
+
+            <!-- Meta Info -->
+            <div class="flex items-center justify-between text-sm text-gray-500 mb-4 pb-4 border-b border-gray-100">
+              <div class="flex items-center gap-1.5">
+                <i class="pi pi-clone"></i>
+                <span>{{ menu.variants.length || 1 }} แบบ</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <i class="pi pi-sliders-h"></i>
+                <span>{{ menu.options?.length || 0 }} กลุ่ม</span>
+              </div>
+            </div>
+          </ng-template>
+
+          <!-- Actions Footer -->
+          <ng-template pTemplate="footer">
+            <div class="grid grid-cols-3 gap-2 -mx-4 -mb-4 pt-0">
+              <p-button
+                label="แก้ไข"
+                icon="pi pi-pencil"
+                [text]="true"
+                styleClass="w-full bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-none rounded-bl-lg"
+                (onClick)="editMenu(menu)"
+              ></p-button>
+              <p-button
+                label="คัดลอก"
+                icon="pi pi-copy"
+                [text]="true"
+                styleClass="w-full bg-yellow-50 text-yellow-600 hover:bg-yellow-100 rounded-none"
+                (onClick)="editMenu(menu)"
+              ></p-button>
+              <p-button
+                label="ลบ"
+                icon="pi pi-trash"
+                [text]="true"
+                styleClass="w-full bg-red-50 text-red-600 hover:bg-red-100 rounded-none rounded-br-lg"
+                (onClick)="deleteMenu(menu)"
+              ></p-button>
+            </div>
+          </ng-template>
+        </p-card>
+      </div>
+
+      <!-- Empty State -->
+      <div
+        *ngIf="!filteredMenus || filteredMenus.length === 0"
+        class="flex flex-col items-center justify-center py-20 text-center"
+      >
+        <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
+          <i class="pi pi-shopping-cart text-gray-300 text-5xl"></i>
+        </div>
+        <h3 class="text-2xl font-semibold text-gray-700 mb-3">ยังไม่มีเมนู</h3>
+        <p class="text-sm text-gray-500 mb-8 max-w-md">
+          เริ่มต้นสร้างเมนูแรกของคุณ
+          เพื่อให้ลูกค้าสามารถสั่งอาหารและเครื่องดื่มได้
+        </p>
+        <p-button
+          label="เพิ่มเมนูใหม่"
+          icon="pi pi-plus"
+          size="large"
+          (onClick)="openCreateUserWorkflow()"
+        ></p-button>
+      </div>
+    </div>
+  </div>
+</ion-content>

@@ -1,0 +1,62 @@
+<div class="flex flex-col h-full relative">
+  <!-- Header -->
+  <ion-header
+    *ngIf=" config"
+    class="ion-no-border border-b border-gray-200"
+  >
+    <div class="w-full flex justify-between items-center">
+      <div class="mb-0.5 px-8!">
+        <h1 class="text-2xl font-medium page-title text-left!">
+          {{ config.ui.headerLabel }}
+        </h1>
+      </div>
+
+      <div class="px-6" *ngIf="showCancelButtonHeader && config">
+        <ion-button fill="none" color="medium" (click)="cancel()">
+          <ion-icon slot="start" name="close-circle-outline"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
+  </ion-header>
+
+  <div
+    class="absolute top-0 right-0 z-10"
+    *ngIf=" showCancelButtonHeader && config"
+  >
+    <ion-button fill="outline" color="medium" (click)="cancel()">
+      <ion-icon slot="start" name="close-circle-outline"></ion-icon>
+    </ion-button>
+  </div>
+
+  <!-- Content -->
+  <ion-content>
+    <div class="flex h-full flex-col md:flex-row">
+      <!-- Sidebar -->
+      <aside
+        *ngIf="showSidebar && state"
+        class="w-full md:w-72 md:min-w-72 md:max-w-72 bg-[--ion-color-light,#fff] border-b md:border-b-0 md:border-r border-gray-100"
+      >
+        <app-workflow-sidebar
+          [steps]="config.steps"
+          [currentIndex]="state.currentIndex"
+          [cancelLabel]="cancelButtonLabel"
+        ></app-workflow-sidebar>
+      </aside>
+
+      <!-- Main -->
+      <main class="flex-1 flex flex-col overflow-hidden">
+
+        <!-- Step -->
+        <div
+          *ngIf="currentStepComponent && stepInjector"
+          class="flex-1 overflow-y-auto"
+        >
+          <ng-container
+            *ngComponentOutlet="currentStepComponent; injector: stepInjector"
+          ></ng-container>
+        </div>
+      </main>
+    </div>
+  </ion-content>
+
+</div>

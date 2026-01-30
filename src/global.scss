@@ -9,6 +9,14 @@
  * https://ionicframework.com/docs/layout/global-stylesheets
  */
 
+@use 'styles/variables.scss';
+@use 'styles/layout.scss';
+@use 'styles/typography.scss';
+@use 'styles/primeng.scss';
+@use 'styles/forms.scss';
+@use 'styles/animation.scss';
+
+
 /* Core CSS required for Ionic components to work properly */
 @import "@ionic/angular/css/core.css";
 
@@ -78,12 +86,7 @@ body {
  * For more information on global stylesheets, visit the documentation:
  * https://ionicframework.com/docs/layout/global-stylesheets
  */
-@use 'styles/variables.scss';
-@use 'styles/layout.scss';
-@use 'styles/typography.scss';
-@use 'styles/primeng.scss';
-@use 'styles/forms.scss';
-@use 'styles/animation.scss';
+
 
 @tailwind base;
 @tailwind components;

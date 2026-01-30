@@ -23,7 +23,8 @@
     "useDefineForClassFields": false,
     "paths": {
       "@core/*": ["src/app/core/*"],
-      "@shared/*": ["src/app/shared/*"]
+      "@shared/*": ["src/app/shared/*"],
+      "@data/*": ["src/app/core/data/*"],
     }
   },
   "angularCompilerOptions": {

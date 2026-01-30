@@ -1,0 +1,67 @@
+<div class="flex h-full w-full flex-col bg-white">
+  <!-- Header -->
+  <div class="flex shrink-0 border-b border-[#E5E7EB] px-8">
+    <p
+      class="page-title text-left!"
+      style="
+        display: block;
+        max-width: 12ch;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      "
+    >
+      {{ project_name }}
+    </p>
+  </div>
+
+  <!-- Main menu view -->
+  <div class="flex-1 overflow-y-auto px-8 py-6">
+    @for (item of menuItemList; track item.titleKey; let lastGroup = $last) {
+      <div class="mb-2">
+        <p class="page-description mb-3 mt-4">
+          {{ item.titleKey}}
+        </p>
+
+        <div class="space-y-1">
+          @for (menu of item.menu; track menu.id) {
+            <div
+              class="flex w-full items-center justify-start gap-3 py-2.5 rounded-lg cursor-pointer text-sm font-medium transition-all duration-200 ease-in-out border border-transparent"
+            >
+              <div
+                class="text-sm font-medium transition-all duration-200 ease-in-out border border-transparent flex w-full items-center justify-start gap-3 px-3 py-2.5 rounded-lg cursor-pointer"
+                [ngClass]="{
+                  'menu-disabled': menu.disabled,
+                  'menu-active': !menu.disabled && selected_id === menu.id,
+                  'menu-inactive': !menu.disabled && selected_id !== menu.id,
+                }"
+                [class.pointer-events-none]="menu.disabled"
+                (click)="!menu.disabled && selectMenu(menu.id)"
+              >
+                <!-- Icon -->
+                <ion-icon
+                  [name]="menu.icon"
+                  class="menu-icon w-5 h-5 shrink-0"
+                  [ngClass]="{
+                    'icon-active': selected_id === menu.id,
+                    'icon-inactive': selected_id !== menu.id,
+                  }"
+                >
+                </ion-icon>
+
+                <!-- Menu name -->
+                <span class="menu-text flex-1">
+                  {{ menu.labelKey }}
+                </span>
+              </div>
+            </div>
+          }
+        </div>
+
+        @if (!lastGroup) {
+          <hr class="my-4 border-0 h-px bg-gray-200 opacity-60" />
+        }
+      </div>
+    }
+  </div>
+</div>

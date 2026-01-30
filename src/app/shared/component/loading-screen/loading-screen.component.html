@@ -1,0 +1,6 @@
+<div class="loading-screen" [class.show]="appUtils.isLoading$()">
+  <div class="loading-content">
+    <div class="loader"></div>
+    <p class="loading-text">{{ appUtils.loadingMessage$() }}</p>
+  </div>
+</div>

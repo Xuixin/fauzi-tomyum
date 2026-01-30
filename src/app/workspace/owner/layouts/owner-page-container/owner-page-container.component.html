@@ -1,0 +1,17 @@
+<ion-split-pane when="lg" contentId="main-content">
+  <!-- เมนูด้านข้าง -->
+  <ion-menu menuId="select-site" contentId="main-content" class="max-w-72 !w-72"
+    type="overlay">
+    <div class="flex h-full w-full flex-row">
+      <!-- side-nav-menu แสดงเฉพาะจอใหญ่ -->
+      <div
+        class="hidden h-full w-full border-r-[1px] border-[#E5E7EB] lg:block lg:max-w-"
+        >
+        <app-sidebar></app-sidebar>
+      </div>
+    </div>
+  </ion-menu>
+
+  <!-- ส่วนแสดงเนื้อหา -->
+  <ion-router-outlet id="main-content"></ion-router-outlet>
+</ion-split-pane>

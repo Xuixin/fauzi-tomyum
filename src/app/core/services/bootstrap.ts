@@ -41,7 +41,7 @@ export class BootstrapService {
           key: 'entry',
           value: 'owner'
         })
-        this.router.navigateByUrl('/home', {
+        this.router.navigateByUrl('/owner/dashboard', {
           replaceUrl: true,
         });
         break;
