@@ -3,11 +3,10 @@ import { CommonModule } from '@angular/common';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { WorkflowRegistryService } from '../../services/workflow-registry';
+import { WorkflowRegistryService } from '../../core/services/workflow-registry';
 import { WorkflowEngineService } from '../../core/services/workflow-engine';
 import { WorkflowStepService } from '../../core/services/workflow-step';
-import { WorkflowDefinition, WorkflowState } from './../../models';
-
+import { WorkflowDefinition, WorkflowState } from '../../core/models/workflow-definition.model';
 
 import { WorkflowSidebarComponent } from '../workflow-sidebar/workflow-sidebar.component';
 
@@ -35,13 +34,12 @@ export class WorkflowContainerComponent implements OnInit, OnDestroy {
   state?: WorkflowState;
   currentStepComponent?: Type<any>;
   stepInjector!: Injector;
+  footerTemplate$ = this.engine.footerTemplate$;
 
   // UI flags
   showHeader = true;
   showSidebar = true;
-  showProgress = true;
   showCancelButtonHeader = true;
-  showFooter = true;
 
   private destroy$ = new Subject<void>();
 
@@ -65,6 +63,7 @@ export class WorkflowContainerComponent implements OnInit, OnDestroy {
     this.config = workflow;
 
     // ตั้งค่า UI flags
+    this.showHeader = this.config.ui.showHeader ?? true;
     this.showSidebar = this.config.ui.showSidebar ?? true;
     this.showCancelButtonHeader = this.config.ui.showCancelButtonHeader ?? true;
 
@@ -74,7 +73,7 @@ export class WorkflowContainerComponent implements OnInit, OnDestroy {
     // Subscribe state changes
     this.engine.state$
       .pipe(takeUntil(this.destroy$))
-      .subscribe((state: any) => {
+      .subscribe(state => {
         if (state) {
           this.state = state;
           this.loadStepComponent(state);
@@ -114,6 +113,31 @@ export class WorkflowContainerComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * ปุ่ม Next
+   */
+  onNext(): void {
+    console.log(this.state?.data)
+
+    if(this.currentStepComponent?.prototype?.beforeNext) {
+      console.log('beforeNext')
+      this.currentStepComponent?.prototype?.beforeNext();
+      console.log(this.currentStepComponent?.prototype?.beforeNext)
+    }
+
+    if (this.state?.isLastStep) {
+      this.complete();
+    } else {
+      this.engine.goNext();
+    }
+  }
+
+  /**
+   * ปุ่ม Back
+   */
+  onBack(): void {
+    this.engine.goBack();
+  }
 
   /**
    * ปุ่ม Cancel
@@ -122,7 +146,37 @@ export class WorkflowContainerComponent implements OnInit, OnDestroy {
     await this.modalCtrl.dismiss({ cancelled: true });
   }
 
+  /**
+   * เสร็จสิ้น workflow
+   */
+  async complete(): Promise<void> {
+    const allData = this.engine.getAllData();
+    await this.modalCtrl.dismiss({
+      cancelled: false,
+      data: allData
+    });
+  }
 
+  /**
+   * Get next button label
+   */
+  get nextButtonLabel(): string {
+    if (this.state?.isLastStep) {
+      return 'เสร็จสิ้น';
+    }
+
+    const step = this.config.steps[this.state?.currentIndex || 0];
+    return step.nextButton?.label || 'ถัดไป';
+  }
+
+
+
+  /**
+   * Get cancel button label
+   */
+  get cancelButtonLabel(): string {
+    return this.config.ui.cancelLabel || 'ยกเลิก';
+  }
 
   ngOnDestroy(): void {
     this.destroy$.next();

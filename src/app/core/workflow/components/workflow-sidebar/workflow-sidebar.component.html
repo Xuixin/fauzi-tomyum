@@ -13,7 +13,7 @@
       <div
         class="flex h-10 w-10 min-w-[40px] items-center justify-center rounded-full font-semibold text-white transition-all duration-300"
         [ngClass]="{
-          'text-blue-500! scale-110 bg-blue-200': isStepActive(i),
+          '!text-blue-500 scale-110 bg-blue-200': isStepActive(i),
           'bg-green-200': isStepCompleted(i),
           'bg-gray-200': !isStepActive(i) && !isStepCompleted(i),
         }"
@@ -34,9 +34,9 @@
         <div
           class="mb-1 text-base font-semibold"
           [ngClass]="{
-            'text-blue-500!': isStepActive(i),
-            'text-green-500!': isStepCompleted(i),
-            'text-[#858585]!': !isStepActive(i) && !isStepCompleted(i),
+            '!text-blue-500': isStepActive(i),
+            '!text-green-500': isStepCompleted(i),
+            '!text-[#858585]': !isStepActive(i) && !isStepCompleted(i),
           }"
         >
           {{ step.name }}
@@ -47,9 +47,9 @@
           class="text-[13px] leading-snug"
           ,
           [ngClass]="{
-            'text-blue-500!': isStepActive(i),
-            'text-green-500!': isStepCompleted(i),
-            'text-[#858585]!': !isStepActive(i) && !isStepCompleted(i),
+            '!text-blue-500 ': isStepActive(i),
+            '!text-green-500': isStepCompleted(i),
+            '!text-[#858585]': !isStepActive(i) && !isStepCompleted(i),
           }"
         >
           {{ step.description }}

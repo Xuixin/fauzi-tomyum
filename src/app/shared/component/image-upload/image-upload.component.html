@@ -1,0 +1,75 @@
+<div class="relative"
+ngClass="{{class}}"
+>
+  <!-- Background with border -->
+  <div
+    class="absolute inset-0 rounded-2xl transition-all duration-300"
+    [ngClass]="{
+      'border-3 bg-linear-to-br border-blue-400 from-blue-50 to-blue-100':
+        !imageDisplay,
+      'border-3 border-gray-300 hover:border-blue-500': imageDisplay,
+    }"
+  ></div>
+
+  <!-- Clickable Area -->
+  <div
+    (click)="fileInput.click()"
+    class="absolute inset-0 cursor-pointer overflow-hidden rounded-2xl shadow-md hover:shadow-xl"
+  >
+    <!-- Preview Image (z-index: 1) -->
+    <img
+      *ngIf="imageDisplay"
+      [src]="imageDisplay"
+      alt="Preview"
+      style="
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: 1;
+      "
+      (load)="onImageLoad()"
+      (error)="onImageError($event)"
+    />
+
+    <!-- Upload Placeholder (แสดงเมื่อไม่มีรูป) -->
+    <div
+      *ngIf="!imageDisplay"
+      class="flex h-full flex-col items-center justify-center text-blue-600"
+      style="position: relative; z-index: 2"
+    >
+      <div
+        class="mb-3 rounded-full bg-white p-4 shadow-md transition-transform duration-300 hover:scale-110"
+      >
+        <ion-icon name="cloud-upload" class="text-5xl"></ion-icon>
+      </div>
+      <span class="text-base font-semibold">อัปโหลดรูป</span>
+      <span class="mt-1 text-sm text-gray-500">คลิกเพื่อเลือกไฟล์</span>
+    </div>
+
+    <!-- Hover Overlay (z-index: 10 - อยู่บนสุด) -->
+    <div
+      *ngIf="imageDisplay"
+      class="absolute inset-0 z-10 flex items-center justify-center bg-black/0 transition-colors duration-300 hover:bg-black/10"
+    >
+      <div
+        class="translate-y-1 text-center opacity-0 transition-all duration-300 hover:translate-y-0 hover:opacity-100"
+      >
+        <div class="mb-2 inline-flex rounded-full bg-white/90 p-3">
+          <ion-icon name="camera" class="text-3xl text-blue-600"></ion-icon>
+        </div>
+        <p class="text-sm font-medium text-white">เปลี่ยนรูปภาพ</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<input
+  #fileInput
+  type="file"
+  accept="image/*"
+  class="hidden"
+  (change)="onFileChange($event)"
+/>

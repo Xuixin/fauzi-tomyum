@@ -1,0 +1,88 @@
+<!-- src/app/workflow/steps/example-workflow/step-confirm/step-confirm.component.html -->
+
+<div class="step-container">
+  
+  <div class="step-header">
+    <h2>ยืนยันข้อมูล</h2>
+    <p class="step-subtitle">กรุณาตรวจสอบข้อมูลก่อนบันทึก</p>
+  </div>
+
+  <!-- User Information Card -->
+  <ion-card class="info-card" *ngIf="userInfo">
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="person-circle-outline"></ion-icon>
+        ข้อมูลผู้ใช้งาน
+      </ion-card-title>
+    </ion-card-header>
+    
+    <ion-card-content>
+      <div class="info-grid">
+        
+        <div class="info-item">
+          <span class="label">ชื่อ-นามสกุล</span>
+          <span class="value">
+            {{ userInfo.firstName }} {{ userInfo.lastName }}
+          </span>
+        </div>
+
+        <div class="info-item">
+          <span class="label">อีเมล</span>
+          <span class="value">{{ userInfo.email }}</span>
+        </div>
+
+        <div class="info-item">
+          <span class="label">เบอร์โทรศัพท์</span>
+          <span class="value">{{ userInfo.phone }}</span>
+        </div>
+
+        <div class="info-item">
+          <span class="label">บทบาท</span>
+          <span class="value">
+            <ion-chip color="primary">
+              {{ getRoleLabel(userInfo.role) }}
+            </ion-chip>
+          </span>
+        </div>
+
+      </div>
+
+      <!-- Edit Button -->
+      <ion-button 
+        expand="block" 
+        fill="outline" 
+        color="medium"
+        (click)="editUserInfo()"
+        class="edit-btn"
+      >
+        <ion-icon slot="start" name="create-outline"></ion-icon>
+        แก้ไขข้อมูล
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Terms and Conditions -->
+  <form [formGroup]="form!" class="terms-form">
+    <ion-item lines="none">
+      <ion-checkbox 
+        slot="start" 
+        formControlName="acceptTerms"
+      ></ion-checkbox>
+      <ion-label class="ion-text-wrap">
+        ฉันยอมรับ<a href="#" class="link">ข้อตกลงและเงื่อนไข</a>ในการใช้งาน
+      </ion-label>
+    </ion-item>
+  </form>
+
+  <!-- Warning Alert -->
+  <ion-card class="warning-card">
+    <ion-card-content>
+      <ion-icon name="warning-outline"></ion-icon>
+      <div class="warning-text">
+        <strong>โปรดตรวจสอบข้อมูลให้ถูกต้อง</strong>
+        <p>หลังจากบันทึกแล้ว คุณจะต้องติดต่อผู้ดูแลระบบเพื่อแก้ไขข้อมูล</p>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+</div>

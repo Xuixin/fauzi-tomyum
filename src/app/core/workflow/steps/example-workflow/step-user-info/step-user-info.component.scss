@@ -1,0 +1,69 @@
+// src/app/workflow/steps/example-workflow/step-user-info/step-user-info.component.scss
+
+.step-container {
+  margin: 0 auto;
+}
+
+.step-header {
+  margin-bottom: 24px;
+
+  h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+    color: var(--ion-text-color, #000);
+  }
+
+  .step-subtitle {
+    font-size: 14px;
+    color: var(--ion-color-medium, #92949c);
+    margin: 0;
+  }
+}
+
+.step-form {
+  ion-item {
+    --padding-start: 0;
+    --inner-padding-end: 0;
+    margin-bottom: 20px;
+  }
+
+  ion-label {
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+
+  .required {
+    color: var(--ion-color-danger, #eb445a);
+  }
+
+  ion-note {
+    font-size: 12px;
+    margin-top: 4px;
+  }
+}
+
+.info-card {
+  margin-top: 24px;
+  background: var(--ion-color-light-tint, #f5f6f9);
+
+  ion-card-content {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 16px;
+
+    ion-icon {
+      font-size: 24px;
+      color: var(--ion-color-primary, #3880ff);
+      flex-shrink: 0;
+    }
+
+    p {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--ion-color-medium, #92949c);
+    }
+  }
+}

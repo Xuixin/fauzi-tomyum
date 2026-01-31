@@ -20,6 +20,7 @@ import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { TagModule } from 'primeng/tag';
 import { ToolbarModule } from 'primeng/toolbar';
+import { WorkflowFacade } from '@core/workflow';
 
 interface StatusCard {
   title: string;
@@ -91,7 +92,8 @@ export class MenuComponent implements OnInit, OnDestroy {
   constructor(
     private menuFacade: MenuFacadeService,
     private appUtils: AppUtilsService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private workflowFacade: WorkflowFacade
   ) {
     addIcons({ restaurant, fastFood, cafe, searchOutline });
     this.initializeForm();
@@ -251,6 +253,11 @@ export class MenuComponent implements OnInit, OnDestroy {
    * ======================= */
   async openCreateUserWorkflow(): Promise<void> {
     console.log('implement next');
+
+    await this.workflowFacade.startWorkflow('create-menu', {
+      cssClass: 'modal-ninety',
+      backdropDismiss: false,
+    });
     // await this.workflowFacade.startWorkflowWithCallback(
     //   'create-menu',
     //   {

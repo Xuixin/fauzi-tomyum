@@ -1,0 +1,326 @@
+<div class="h-full flex flex-col">
+  <!-- Main Content -->
+  <div class="flex-1 overflow-y-auto px-8 py-6">
+    <div class="max-w-4xl mx-auto">
+
+      <!-- Header -->
+      <div class="mb-8">
+        <h2 class="text-2xl font-semibold text-gray-900 mb-2">
+          ยืนยันข้อมูลเมนู
+        </h2>
+        <p class="text-sm text-gray-500">
+          กรุณาตรวจสอบข้อมูลก่อนสร้างเมนู
+        </p>
+      </div>
+
+      <!-- ================= Menu Basic Info Card ================= -->
+      <div *ngIf="menuInfo" class="bg-white border border-gray-200 rounded-2xl p-6 mb-6 shadow-sm">
+        <!-- Card Header -->
+        <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-200">
+          <div class="flex items-center gap-3">
+            <div class="bg-blue-100 rounded-full p-2">
+              <ion-icon name="restaurant-outline" class="text-2xl text-blue-600"></ion-icon>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-900">ข้อมูลเมนูหลัก</h3>
+          </div>
+
+          <ion-button fill="outline" size="small" color="medium" (click)="editMenuInfo()">
+            <ion-icon slot="start" name="create-outline"></ion-icon>
+            แก้ไข
+          </ion-button>
+        </div>
+
+        <!-- Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+          <!-- Image Section -->
+          <div class="lg:col-span-1">
+            <div class="aspect-square rounded-xl overflow-hidden bg-gray-100 border border-gray-200">
+              <img
+                *ngIf="menuInfo.imageDisplay"
+                [src]="menuInfo.imageDisplay"
+                alt="Menu Image"
+                class="w-full h-full object-cover"
+              />
+              <div *ngIf="!menuInfo.imageDisplay" class="w-full h-full flex items-center justify-center">
+                <ion-icon name="image-outline" class="text-6xl text-gray-300"></ion-icon>
+              </div>
+            </div>
+          </div>
+
+          <!-- Info Section -->
+          <div class="lg:col-span-2 space-y-4">
+            <!-- Name -->
+            <div>
+              <p class="text-xs font-medium text-gray-500 mb-1">ชื่อเมนู</p>
+              <p class="text-lg font-semibold text-gray-900">{{ menuInfo.name }}</p>
+            </div>
+
+            <!-- Type & Status Grid -->
+            <div class="grid grid-cols-2 gap-4">
+              <!-- Type -->
+              <div>
+                <p class="text-xs font-medium text-gray-500 mb-2">ประเภท</p>
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50 border border-blue-200 rounded-lg">
+                  <ion-icon name="pricetag" class="text-blue-600"></ion-icon>
+                  <span class="text-sm font-medium text-blue-700">
+                    {{ getTypeLabel(menuInfo.type) }}
+                    <span *ngIf="menuInfo.sub_type" class="text-blue-500">
+                      / {{ getSubTypeLabel(menuInfo.sub_type) }}
+                    </span>
+                  </span>
+                </div>
+              </div>
+
+              <!-- Status -->
+              <div>
+                <p class="text-xs font-medium text-gray-500 mb-2">สถานะ</p>
+                <div
+                  class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border"
+                  [ngClass]="menuInfo.is_active ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'"
+                >
+                  <ion-icon
+                    [name]="menuInfo.is_active ? 'checkmark-circle' : 'close-circle'"
+                    [class]="menuInfo.is_active ? 'text-green-600' : 'text-gray-600'"
+                  ></ion-icon>
+                  <span
+                    class="text-sm font-medium"
+                    [class]="menuInfo.is_active ? 'text-green-700' : 'text-gray-700'"
+                  >
+                    {{ menuInfo.is_active ? 'เปิดขาย' : 'ปิดขาย' }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Price Range -->
+            <div *ngIf="variantInfo?.variants?.length > 0">
+              <p class="text-xs font-medium text-gray-500 mb-2">ช่วงราคา</p>
+              <div class="flex items-baseline gap-2">
+                <span class="text-2xl font-bold text-blue-600">
+                  ฿{{ getMinPrice() }}
+                </span>
+                <span *ngIf="getMinPrice() !== getMaxPrice()" class="text-lg text-gray-400">
+                  - ฿{{ getMaxPrice() }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ================= Variants Card ================= -->
+      <div *ngIf="variantInfo?.variants?.length > 0" class="bg-white border border-gray-200 rounded-2xl p-6 mb-6 shadow-sm">
+        <!-- Card Header -->
+        <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-200">
+          <div class="flex items-center gap-3">
+            <div class="bg-purple-100 rounded-full p-2">
+              <ion-icon name="list" class="text-2xl text-purple-600"></ion-icon>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold text-gray-900">ตัวเลือกเมนู</h3>
+              <p class="text-xs text-gray-500">{{ variantInfo.variants.length }} รายการ</p>
+            </div>
+          </div>
+
+          <ion-button fill="outline" size="small" color="medium" (click)="editVariantInfo()">
+            <ion-icon slot="start" name="create-outline"></ion-icon>
+            แก้ไข
+          </ion-button>
+        </div>
+
+        <!-- Variants List -->
+        <div class="space-y-3">
+          <div
+            *ngFor="let variant of variants; let i = index"
+            class="flex items-center gap-4 p-4 bg-gray-50 border border-gray-200 rounded-xl hover:border-blue-300 transition-colors"
+          >
+            <!-- Image -->
+            <div class="w-16 h-16 rounded-lg overflow-hidden bg-white border border-gray-200 shrink-0">
+              <img
+                *ngIf="variant.imageDisplay"
+                [src]="variant.imageDisplay"
+                [alt]="variant.display_name"
+                class="w-full h-full object-cover"
+              />
+              <div *ngIf="!variant.imageDisplay" class="w-full h-full flex items-center justify-center">
+                <ion-icon name="image-outline" class="text-2xl text-gray-300"></ion-icon>
+              </div>
+            </div>
+
+            <!-- Info -->
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-1">
+                <p class="font-semibold text-gray-900 truncate">{{ variant.display_name }}</p>
+                <span
+                  *ngIf="variant.is_default"
+                  class="inline-flex items-center gap-1 px-2 py-0.5 bg-green-100 text-green-700 text-xs font-medium rounded-full"
+                >
+                  <ion-icon name="star" class="text-xs"></ion-icon>
+                  เริ่มต้น
+                </span>
+              </div>
+              <p class="text-sm text-gray-500">{{ variant.name }}</p>
+              <div class="flex items-center gap-3 mt-2">
+                <span class="text-xs text-gray-500">SKU: {{ variant.sku || '-' }}</span>
+                <span class="text-xs text-gray-400">|</span>
+                <span class="text-xs text-gray-500">Kitchen: {{ variant.kitchen_id }}</span>
+              </div>
+            </div>
+
+            <!-- Price & Status -->
+            <div class="text-right">
+              <p class="text-xl font-bold text-blue-600 mb-2">฿{{ variant.price }}</p>
+              <span
+                class="inline-block px-2 py-1 text-xs font-medium rounded-full"
+                [ngClass]="variant.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'"
+              >
+                {{ variant.is_active ? 'ใช้งาน' : 'ปิด' }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= Options Card ================= -->
+      <div *ngIf="optionInfo?.options?.length > 0" class="bg-white border border-gray-200 rounded-2xl p-6 mb-6 shadow-sm">
+        <!-- Card Header -->
+        <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-200">
+          <div class="flex items-center gap-3">
+            <div class="bg-orange-100 rounded-full p-2">
+              <ion-icon name="options-outline" class="text-2xl text-orange-600"></ion-icon>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold text-gray-900">ตัวเลือกเพิ่มเติม</h3>
+              <p class="text-xs text-gray-500">{{ optionInfo.options.length }} กลุ่ม</p>
+            </div>
+          </div>
+
+          <ion-button fill="outline" size="small" color="medium" (click)="editOptionInfo()">
+            <ion-icon slot="start" name="create-outline"></ion-icon>
+            แก้ไข
+          </ion-button>
+        </div>
+
+        <!-- Options List -->
+        <div class="space-y-4">
+          <div
+            *ngFor="let option of optionInfo.options; let i = index"
+            class="p-4 bg-gray-50 border border-gray-200 rounded-xl"
+          >
+            <!-- Option Header -->
+            <div class="flex items-center justify-between mb-3">
+              <h4 class="font-semibold text-gray-900">{{ option.name }}</h4>
+              <div class="flex gap-2">
+                <span
+                  *ngIf="option.required"
+                  class="px-2 py-1 bg-red-100 text-red-700 text-xs font-medium rounded-full"
+                >
+                  บังคับเลือก
+                </span>
+                <span
+                  *ngIf="option.multiple"
+                  class="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full"
+                >
+                  เลือกได้หลาย
+                </span>
+              </div>
+            </div>
+
+            <!-- Option Items -->
+            <div class="space-y-2">
+              <div
+                *ngFor="let item of option.items"
+                class="flex items-center justify-between py-2 px-3 bg-white rounded-lg border border-gray-200"
+              >
+                <span class="text-sm text-gray-700">{{ item.name }}</span>
+                <span
+                  class="text-sm font-medium"
+                  [ngClass]="item.price > 0 ? 'text-blue-600' : 'text-green-600'"
+                >
+                  {{ item.price > 0 ? '+฿' + item.price : 'ฟรี' }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- No Options State -->
+      <div *ngIf="!optionInfo?.options || optionInfo.options.length === 0" class="bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl p-8 mb-6">
+        <div class="text-center">
+          <div class="bg-gray-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
+            <ion-icon name="options-outline" class="text-3xl text-gray-400"></ion-icon>
+          </div>
+          <p class="text-gray-600 font-medium">ไม่มีตัวเลือกเพิ่มเติม</p>
+          <p class="text-sm text-gray-500 mt-1">เมนูนี้ไม่มีตัวเลือกเพิ่มเติม</p>
+        </div>
+      </div>
+
+      <!-- ================= Confirmation ================= -->
+      <div class="bg-white border border-gray-200 rounded-2xl p-6 mb-6 shadow-sm">
+        <form [formGroup]="form!">
+          <label class="flex items-start gap-3 cursor-pointer group">
+            <ion-checkbox
+              formControlName="confirmCreate"
+              class="mt-1"
+            ></ion-checkbox>
+            <div class="flex-1">
+              <p class="text-sm font-medium text-gray-900 group-hover:text-blue-600 transition-colors">
+                ฉันได้ตรวจสอบข้อมูลแล้วและต้องการสร้างเมนูนี้
+              </p>
+              <p class="text-xs text-gray-500 mt-1">
+                กรุณาตรวจสอบความถูกต้องของข้อมูลก่อนยืนยัน
+              </p>
+            </div>
+          </label>
+        </form>
+      </div>
+
+      <!-- ================= Warning ================= -->
+      <div class="bg-linear-to-r from-yellow-50 to-orange-50 border-l-4 border-yellow-400 rounded-lg p-4 mb-6">
+        <div class="flex gap-3">
+          <ion-icon name="warning" class="text-yellow-600! text-2xl shrink-0"></ion-icon>
+          <div class="flex-1">
+            <h4 class="font-semibold text-yellow-900! mb-1">โปรดตรวจสอบข้อมูลให้ถูกต้อง</h4>
+            <p class="text-sm text-yellow-800!">
+              หลังจากสร้างเมนูแล้ว คุณสามารถแก้ไขข้อมูลได้ในหน้าจัดการเมนู
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div
+    *ngIf="isCreating"
+    class="fixed inset-0 bg-black/50 backdrop-blur-sm flex flex-col items-center justify-center z-50"
+  >
+    <div class="bg-white rounded-2xl p-8 shadow-2xl">
+      <ion-spinner name="crescent" color="primary" class="w-12 h-12"></ion-spinner>
+      <p class="text-gray-700 mt-4 font-medium">กำลังสร้างเมนู...</p>
+    </div>
+  </div>
+</div>
+
+<ng-template #footer>
+  <div class="flex items-center justify-between w-full px-4 py-2">
+    <p-button
+      label="Back"
+      icon="pi pi-arrow-left"
+      styleClass="p-button-text"
+      (click)="goBack()"
+    ></p-button>
+    
+    <p-button
+      label="Confirm"
+      icon="pi pi-check"
+      iconPos="right"
+      styleClass="p-button-success"
+      (click)="goNext()"
+    ></p-button>
+  </div>
+</ng-template>

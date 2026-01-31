@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonIcon } from "@ionic/angular/standalone";
-import { WorkflowStepDefinition } from '@core/workflow/core/models/workflow-definition.model';
+import { WorkflowStepDefinition } from '@core/workflow';
 
 @Component({
   selector: 'app-workflow-sidebar',

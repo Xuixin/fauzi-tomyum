@@ -1,7 +1,7 @@
 // src/app/workflow/core/services/workflow-registry.service.ts
 
 import { Injectable } from '@angular/core';
-import { WorkflowDefinition } from '../core/models/workflow-definition.model';
+import { WorkflowDefinition } from '../models/workflow-definition.model';
 
 /**
  * Workflow Registry Service

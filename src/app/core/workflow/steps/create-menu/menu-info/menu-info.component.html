@@ -1,0 +1,194 @@
+<div class="flex h-full flex-col">
+  <!-- Form Content -->
+  <div class="flex-1 px-8">
+    <div class="mx-auto">
+      <form [formGroup]="form!">
+        <div class="space-y-8 rounded-2xl bg-white p-8">
+          <!-- Image Upload Section -->
+          <div class="space-y-4">
+            <label
+              class="flex items-center gap-2 text-base font-semibold text-gray-800"
+            >
+              <ion-icon name="image" class="text-blue-600"></ion-icon>
+              รูปภาพ
+              <span class="text-red-500 text-lg">*</span>
+            </label>
+
+            <div class="flex items-start gap-6">
+              <!-- Image Preview/Upload Area -->
+              <app-image-upload
+                [imageDisplay]="imageDisplay"
+                (imageChange)="onFileChange($event)"
+              ></app-image-upload>
+
+              <!-- Upload Instructions -->
+              <div class="flex-1">
+                <div class="rounded-xl border border-blue-200 bg-blue-50 p-5">
+                  <h4
+                    class="mb-3 flex items-center gap-2 font-semibold text-gray-800"
+                  >
+                    <ion-icon
+                      name="information-circle"
+                      class="text-xl text-blue-600"
+                    ></ion-icon>
+                    คำแนะนำการอัปโหลด
+                  </h4>
+                  <ul class="space-y-2 text-sm text-gray-700">
+                    <li class="flex items-start gap-2">
+                      <ion-icon
+                        name="checkmark-circle"
+                        class="mt-0.5 shrink-0 text-lg text-green-600"
+                      ></ion-icon>
+                      <span>รองรับไฟล์ภาพ JPG, PNG, GIF</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                      <ion-icon
+                        name="checkmark-circle"
+                        class="mt-0.5 shrink-0 text-lg text-green-600"
+                      ></ion-icon>
+                      <span>ขนาดไฟล์ไม่เกิน 5MB</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                      <ion-icon
+                        name="checkmark-circle"
+                        class="mt-0.5 shrink-0 text-lg text-green-600"
+                      ></ion-icon>
+                      <span>แนะนำขนาดภาพ 800x800 พิกเซล</span>
+                    </li>
+                  </ul>
+
+                  <!-- Clear Image Button -->
+                  <button
+                    *ngIf="imageDisplay"
+                    pButton
+                    type="button"
+                    label="ลบรูปภาพ"
+                    icon="pi pi-trash"
+                    severity="danger"
+                    outlined="true"
+                    class="mt-4 w-full"
+                    (click)="clearImage(); $event.stopPropagation()"
+                  ></button>
+                </div>
+              </div>
+
+            
+            </div>
+
+            <!-- Error Message -->
+            <div
+              *ngIf="f?.['imageFile']?.invalid && f?.['imageFile']?.touched"
+              class="rounded-lg border-l-4 border-red-500 bg-red-50 p-4"
+            >
+              <div class="flex items-center gap-2 text-red-700">
+                <ion-icon name="alert-circle" class="text-xl"></ion-icon>
+                <span class="font-medium">กรุณาอัปโหลดรูปภาพ</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Divider -->
+          <div class="border-t border-gray-200"></div>
+
+          <!-- Form Fields -->
+          <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <!-- Type -->
+            <div class="space-y-2">
+              <input
+                pInputText
+                type="text"
+                label="ประเภทอาหาร"
+                placeholder="ประเภทอาหาร"
+                formControlName="type"
+                (focus)="showType = true"
+                (blur)="showType = false"
+              />
+
+              <div class="flex flex-wrap gap-2" *ngIf="showType">
+                <div
+                  *ngFor="let item of helperTypeSelect"
+                  class="cursor-pointer"
+                  (click)="onClickTypeHelper(item)"
+                >
+                  <p-button [label]="item.name" shape="round"></p-button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Sub Type -->
+            <div class="space-y-2">
+              <input
+                pInputText
+                type="text"
+                placeholder="ประเภทย่อย"
+                formControlName="sub_type"
+                (focus)="showSubType = true"
+                (blur)="showSubType = false"
+              />
+
+              <div class="flex flex-wrap gap-2" *ngIf="showSubType">
+                <div
+                  *ngFor="let item of subType"
+                  class="cursor-pointer"
+                  (click)="onClickSubTypeHelper(item)"
+                >
+                  <p-button [label]="item.name" shape="round"></p-button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Menu Name (Full Width) -->
+          <div class="space-y-2">
+            <input
+              pInputText
+              type="text"
+              placeholder="ชื่อเมนู"
+              formControlName="name"
+            />
+          </div>
+
+          <!-- Divider -->
+          <div class="border-t border-gray-200"></div>
+
+          <!-- Is Active Toggle -->
+          <div
+            class="bg-linear-to-r rounded-xl border-2 border-gray-200 from-gray-50 to-gray-100 p-6 transition-all duration-300 hover:border-blue-300"
+          >
+            <div class="flex items-center justify-between">
+              <div class="flex-1">
+                <label
+                  class="mb-2 flex items-center gap-2 text-base font-semibold text-gray-800"
+                >
+                  <ion-icon name="power" class="text-blue-600"></ion-icon>
+                  สถานะการใช้งาน
+                </label>
+                <p class="text-sm text-gray-600">
+                  เปิด/ปิด การใช้งานเมนูนี้ในระบบ
+                </p>
+              </div>
+              <div class="ml-6">
+                <ion-toggle
+                  formControlName="is_active"
+                  color="primary"
+                  class="scale-125"
+                ></ion-toggle>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<ng-template #footer>
+  <div class="flex justify-end px-8 py-4 !border-t !border-gray-200">
+    <p-button
+      [label]="nextLabel()"
+      icon="pi pi-arrow-right"
+      iconPos="right"
+      (click)="goNext()"
+    ></p-button>
+  </div>
+</ng-template>

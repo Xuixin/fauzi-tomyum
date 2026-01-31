@@ -1,5 +1,4 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { provideData } from './app/providers/data.provider';
 
 import { AppComponent } from './app/app.component';
 
@@ -30,7 +29,6 @@ const MyPreset = definePreset(Aura, {
 bootstrapApplication(AppComponent, {
   providers: [
     ...appConfig.providers,
-    provideData(true),
     provideAnimationsAsync(),
     providePrimeNG({
       theme: {

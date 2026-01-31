@@ -1,0 +1,112 @@
+<!-- src/app/workflow/steps/example-workflow/step-user-info/step-user-info.component.html -->
+
+<div class="step-container">
+  
+  <div class="step-header">
+    <h2>ข้อมูลผู้ใช้งาน</h2>
+    <p class="step-subtitle">กรุณากรอกข้อมูลพื้นฐานของผู้ใช้งาน</p>
+  </div>
+
+  <form [formGroup]="form!" class="step-form">
+    
+    <!-- First Name -->
+    <ion-item>
+      <ion-label position="stacked">
+        ชื่อ <span class="required">*</span>
+      </ion-label>
+      <ion-input
+        formControlName="firstName"
+        placeholder="กรอกชื่อ"
+        type="text"
+      ></ion-input>
+      <ion-note 
+        slot="error" 
+        *ngIf="f?.['firstName']?.invalid && f?.['firstName']?.touched"
+      >
+        <span *ngIf="f?.['firstName']?.errors?.['required']">กรุณากรอกชื่อ</span>
+        <span *ngIf="f?.['firstName']?.errors?.['minlength']">ชื่อต้องมีอย่างน้อย 2 ตัวอักษร</span>
+      </ion-note>
+    </ion-item>
+
+    <!-- Last Name -->
+    <ion-item>
+      <ion-label position="stacked">
+        นามสกุล <span class="required">*</span>
+      </ion-label>
+      <ion-input
+        formControlName="lastName"
+        placeholder="กรอกนามสกุล"
+        type="text"
+      ></ion-input>
+      <ion-note 
+        slot="error" 
+        *ngIf="f?.['lastName']?.invalid && f?.['lastName']?.touched"
+      >
+        <span *ngIf="f?.['lastName']?.errors?.['required']">กรุณากรอกนามสกุล</span>
+        <span *ngIf="f?.['lastName']?.errors?.['minlength']">นามสกุลต้องมีอย่างน้อย 2 ตัวอักษร</span>
+      </ion-note>
+    </ion-item>
+
+    <!-- Email -->
+    <ion-item>
+      <ion-label position="stacked">
+        อีเมล <span class="required">*</span>
+      </ion-label>
+      <ion-input
+        formControlName="email"
+        placeholder="example@email.com"
+        type="email"
+      ></ion-input>
+      <ion-note 
+        slot="error" 
+        *ngIf="f?.['email']?.invalid && f?.['email']?.touched"
+      >
+        <span *ngIf="f?.['email']?.errors?.['required']">กรุณากรอกอีเมล</span>
+        <span *ngIf="f?.['email']?.errors?.['email']">รูปแบบอีเมลไม่ถูกต้อง</span>
+      </ion-note>
+    </ion-item>
+
+    <!-- Phone -->
+    <ion-item>
+      <ion-label position="stacked">
+        เบอร์โทรศัพท์ <span class="required">*</span>
+      </ion-label>
+      <ion-input
+        formControlName="phone"
+        placeholder="0812345678"
+        type="tel"
+        maxlength="10"
+      ></ion-input>
+      <ion-note 
+        slot="error" 
+        *ngIf="f?.['phone']?.invalid && f?.['phone']?.touched"
+      >
+        <span *ngIf="f?.['phone']?.errors?.['required']">กรุณากรอกเบอร์โทรศัพท์</span>
+        <span *ngIf="f?.['phone']?.errors?.['pattern']">กรุณากรอกเบอร์โทรศัพท์ 10 หลัก</span>
+      </ion-note>
+    </ion-item>
+
+    <!-- Role -->
+    <ion-item>
+      <ion-label position="stacked">
+        บทบาท <span class="required">*</span>
+      </ion-label>
+      <ion-select 
+        formControlName="role" 
+        placeholder="เลือกบทบาท"
+        interface="popover"
+      >
+        <ion-select-option 
+          *ngFor="let role of roles" 
+          [value]="role.value"
+        >
+          {{ role.label }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+  </form>
+
+ 
+
+</div>

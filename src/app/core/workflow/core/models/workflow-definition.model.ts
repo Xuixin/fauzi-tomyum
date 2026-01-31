@@ -20,7 +20,9 @@ export interface WorkflowDefinition {
  */
 export interface WorkflowUIConfig {
   headerLabel: string;
+  cancelLabel?: string;
   showSidebar?: boolean;
+  showHeader?: boolean;
   showCancelButtonHeader?: boolean;
 }
 

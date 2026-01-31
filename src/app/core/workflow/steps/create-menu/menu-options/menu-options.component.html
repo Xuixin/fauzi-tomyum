@@ -1,0 +1,379 @@
+<div class="flex h-full flex-col">
+  <!-- Main Content -->
+  <div class="flex-1 overflow-hidden">
+    <div class="mx-auto h-full">
+      <div class="flex h-full gap-6">
+        <!-- Left Sidebar - Options List -->
+        <div
+          class="w-80 shrink-0 overflow-y-auto border-r border-gray-200 bg-white p-6"
+        >
+          <h3
+            class="mb-4 flex items-center gap-2 text-lg font-bold text-gray-800"
+          >
+            <ion-icon name="options-outline" class="text-blue-600"></ion-icon>
+            ตัวเลือกเพิ่มเติม ({{ optionsArray.length }})
+          </h3>
+
+          <form [formGroup]="form!">
+            <div formArrayName="options" class="space-y-3">
+              <!-- Option Group Cards -->
+              <div
+                *ngFor="let optionGroup of optionsArray.controls; let i = index"
+                [formGroupName]="i"
+                (click)="selectOptionGroup(i)"
+                class="group relative cursor-pointer rounded-xl border-2 p-4 transition-all duration-300"
+                [ngClass]="{
+                  'border-blue-500 bg-blue-50': selectedOptionIndex === i,
+                  'border-gray-200 bg-white hover:border-blue-300':
+                    selectedOptionIndex !== i,
+                }"
+              >
+                <!-- Group Info -->
+                <div class="mb-3">
+                  <p class="mb-1 truncate font-semibold text-gray-800">
+                    {{ optionGroup.get('name')?.value || 'ยังไม่ได้ตั้งชื่อ' }}
+                  </p>
+
+                  <div class="flex flex-wrap gap-2">
+                    <span
+                      *ngIf="optionGroup.get('required')?.value"
+                      class="rounded-full bg-red-100 px-2 py-0.5 text-xs text-red-700"
+                    >
+                      บังคับเลือก
+                    </span>
+                    <span
+                      *ngIf="optionGroup.get('multiple')?.value"
+                      class="rounded-full bg-blue-100 px-2 py-0.5 text-xs text-blue-700"
+                    >
+                      เลือกได้หลาย
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Items Count -->
+                <div class="flex items-center justify-between text-xs">
+                  <span class="text-gray-500">
+                    {{ getOptionItems(i).length }} รายการ
+                  </span>
+
+                  <button
+                    type="button"
+                    (click)="removeOptionGroup(i); $event.stopPropagation()"
+                    class="text-red-500 opacity-0 transition-opacity hover:text-red-700 group-hover:opacity-100"
+                  >
+                    <ion-icon name="trash-outline" class="text-lg"></ion-icon>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Add New Option Group Card -->
+              <div
+                (click)="addOptionGroup()"
+                class="cursor-pointer rounded-xl border-2 border-dashed border-blue-300 bg-blue-50 p-6 transition-all duration-300 hover:border-blue-500 hover:bg-blue-100"
+              >
+                <div
+                  class="text-blue-600! flex flex-col items-center justify-center"
+                >
+                  <ion-icon
+                    name="add-circle"
+                    class="text-blue-600! mb-2 text-5xl"
+                  ></ion-icon>
+                  <span class="text-blue-600! font-semibold"
+                    >เพิ่มตัวเลือกใหม่</span
+                  >
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Right Content - Option Detail or Empty State -->
+        <div class="flex-1 overflow-y-auto bg-white">
+          <!-- Option Group Detail -->
+          <div
+            *ngIf="selectedOptionIndex !== null && getSelectedOptionForm()"
+            class="p-8"
+          >
+            <form [formGroup]="getSelectedOptionForm()!">
+              <!-- Group Name -->
+              <div class="mb-6">
+                <div class="flex flex-col gap-2">
+                  <label class="font-semibold text-gray-800">ชื่อกลุ่มตัวเลือก <span class="text-red-500">*</span></label>
+                  <input 
+                    pInputText 
+                    formControlName="name" 
+                    placeholder="เช่น ระดับความหวาน, ท็อปปิ้ง, ขนาด" 
+                    class="w-full"
+                  />
+                </div>
+              </div>
+
+              <!-- Checkboxes -->
+              <div class="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div class="rounded-xl border-2 border-red-200 bg-red-50 p-5">
+                  <div class="flex items-center justify-between">
+                    <div class="flex-1">
+                      <label
+                        class="mb-1 flex items-center gap-2 text-sm font-semibold text-gray-800"
+                      >
+                        <ion-icon
+                          name="alert-circle"
+                          class="text-red-600"
+                        ></ion-icon>
+                        บังคับเลือก
+                      </label>
+                      <p class="text-xs text-gray-600">
+                        ลูกค้าต้องเลือกตัวเลือกนี้
+                      </p>
+                    </div>
+                    <ion-toggle
+                      formControlName="required"
+                      color="danger"
+                      class="ml-4"
+                    ></ion-toggle>
+                  </div>
+                </div>
+
+                <div class="rounded-xl border-2 border-blue-200 bg-blue-50 p-5">
+                  <div class="flex items-center justify-between">
+                    <div class="flex-1">
+                      <label
+                        class="mb-1 flex items-center gap-2 text-sm font-semibold text-gray-800"
+                      >
+                        <ion-icon
+                          name="checkmark-done"
+                          class="text-blue-600"
+                        ></ion-icon>
+                        เลือกได้หลายรายการ
+                      </label>
+                      <p class="text-xs text-gray-600">
+                        ลูกค้าสามารถเลือกได้มากกว่า 1
+                      </p>
+                    </div>
+                    <ion-toggle
+                      formControlName="multiple"
+                      color="primary"
+                      class="ml-4"
+                    ></ion-toggle>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Divider -->
+              <div class="my-6 border-t border-gray-200"></div>
+
+              <!-- Option Items Section -->
+              <div>
+                <div class="mb-4 flex items-center justify-between">
+                  <label
+                    class="flex items-center gap-2 text-base font-semibold text-gray-800"
+                  >
+                    <ion-icon name="list" class="text-blue-600"></ion-icon>
+                    รายการตัวเลือก
+                    <span class="text-red-500">*</span>
+                  </label>
+
+                  <ion-button
+                    fill="solid"
+                    size="small"
+                    color="primary"
+                    (click)="addOptionItem(selectedOptionIndex)"
+                  >
+                    <ion-icon slot="start" name="add-outline"></ion-icon>
+                    เพิ่มรายการ
+                  </ion-button>
+                </div>
+
+                <div formArrayName="items" class="space-y-3">
+                  <div
+                    *ngFor="
+                      let item of getOptionItems(selectedOptionIndex).controls;
+                      let j = index
+                    "
+                    [formGroupName]="j"
+                    class="items-center! flex rounded-lg border border-gray-200 bg-gray-50 px-4 py-2"
+                  >
+                    <!-- Item Name -->
+                    <div class="flex-1">
+                      <input
+                        pInputText
+                        formControlName="name"
+                        placeholder="ชื่อตัวเลือก"
+                        class="w-full rounded-l-lg! rounded-r-none! m-0!"
+                      />
+                    </div>
+
+                    <!-- Item Price -->
+                    <div class="w-32">
+                      <input
+                        pInputText
+                        type="number"
+                        formControlName="price"
+                        placeholder="ราคา"
+                        class="w-full rounded-l-none! rounded-r-lg! border-l-0! m-0!"
+                      />
+                    </div>
+
+                    <!-- Remove Button -->
+                    <ion-button
+                      fill="clear"
+                      color="danger"
+                      size="small"
+                      [disabled]="
+                        getOptionItems(selectedOptionIndex).length === 1
+                      "
+                      (click)="removeOptionItem(selectedOptionIndex, j)"
+                    >
+                      <ion-icon
+                        slot="icon-only"
+                        name="close-outline"
+                      ></ion-icon>
+                    </ion-button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <!-- Empty State - No Option Selected -->
+          <div
+            *ngIf="selectedOptionIndex === null && optionsArray.length > 0"
+            class="flex h-full items-center justify-center p-8"
+          >
+            <div class="text-center">
+              <ion-icon
+                name="arrow-back-circle"
+                class="mb-4 text-8xl text-gray-300"
+              ></ion-icon>
+              <h3 class="mb-2 text-xl font-semibold text-gray-600">
+                เลือกกลุ่มตัวเลือกที่ต้องการแก้ไข
+              </h3>
+              <p class="text-gray-500">
+                คลิกที่รายการด้านซ้ายเพื่อดูรายละเอียด
+              </p>
+            </div>
+          </div>
+
+          <!-- Initial Empty State - No Options Yet -->
+          <div
+            *ngIf="optionsArray.length === 0"
+            class="flex h-full items-center justify-center p-8"
+          >
+            <div class="max-w-lg text-center">
+              <div
+                class="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-blue-100"
+              >
+                <ion-icon
+                  name="options-outline"
+                  class="text-6xl text-blue-600"
+                ></ion-icon>
+              </div>
+
+              <h3 class="mb-3 text-2xl font-semibold text-gray-800">
+                ตัวเลือกเพิ่มเติม (ไม่บังคับ)
+              </h3>
+
+              <p class="mb-6 leading-relaxed text-gray-600">
+                สร้างตัวเลือกเพิ่มเติมให้ลูกค้าสามารถปรับแต่งเมนูตามความต้องการ
+              </p>
+
+              <!-- Quick Add Templates -->
+              <div class="mb-6">
+                <p class="mb-3 text-left text-sm font-medium text-gray-700">
+                  เพิ่มแบบด่วน (Quick Add)
+                </p>
+                <div class="grid grid-cols-2 gap-3">
+                  <ng-container *ngFor="let item of quickAddOption">
+                    <button
+                      type="button"
+                      (click)="item.config.click()"
+                      class="px-6! py-2! rounded-xl! group border text-left transition-all duration-300"
+                      [ngClass]="item.config.buttonColor"
+                    >
+                      <div class="mb-2 flex items-center gap-3">
+                        <div
+                          class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-white transition-transform group-hover:scale-110"
+                          [ngClass]="item.config.iconBgColor"
+                        >
+                          <ion-icon
+                            [name]="item.config.icon"
+                            class="text-xl"
+                            [ngClass]="item.config.iconStyle"
+                          ></ion-icon>
+                        </div>
+
+                        <div>
+                          <h5 class="font-semibold text-gray-800">
+                            {{ item.name }}
+                          </h5>
+                          <p class="text-xs text-gray-600">
+                            {{ item.items.length }} ตัวเลือก
+                          </p>
+                        </div>
+                      </div>
+
+                      <p class="text-xs leading-relaxed text-gray-500">
+                        <ng-container
+                          *ngFor="let list of item.items; let i = index"
+                        >
+                          <span
+                            >{{ i !== 0 ? ' • ' : '' }}{{ list.name }}
+                            {{
+                              list.price !== 0 ? `(฿ ${list.price})` : ''
+                            }}</span
+                          >
+                        </ng-container>
+                      </p>
+                    </button>
+                  </ng-container>
+                </div>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="flex gap-3">
+                <ion-button
+                  expand="block"
+                  fill="solid"
+                  color="primary"
+                  (click)="addOptionGroup()"
+                  class="flex-1"
+                >
+                  <ion-icon slot="start" name="add-circle"></ion-icon>
+                  เพิ่มตัวเลือกเอง
+                </ion-button>
+
+                <ion-button
+                  expand="block"
+                  fill="outline"
+                  color="medium"
+                  (click)="skipOptions()"
+                  class="flex-1"
+                >
+                  ข้ามขั้นตอนนี้
+                </ion-button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #footer>
+  <div class="flex w-full items-center justify-between px-4 py-2">
+    <p-button
+      label="Back"
+      icon="pi pi-arrow-left"
+      styleClass="p-button-text"
+      (click)="goBack()"
+    ></p-button>
+
+    <p-button
+      label="Next"
+      icon="pi pi-arrow-right"
+      iconPos="right"
+      (click)="goNext()"
+    ></p-button>
+  </div>
+</ng-template>

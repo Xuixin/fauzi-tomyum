@@ -1,0 +1,417 @@
+<div class="flex h-full flex-col">
+  <!-- Main Content -->
+  <div class="flex-1 overflow-hidden">
+    <div class="mx-auto h-full">
+      <div class="flex h-full gap-6">
+        <!-- Left Sidebar - Variant List -->
+        <div
+          class="w-80 shrink-0 overflow-y-auto border-r border-gray-200 bg-white p-6"
+        >
+          <h3
+            class="mb-4 flex items-center gap-2 text-lg font-bold text-gray-800"
+          >
+            <ion-icon name="list" class="text-blue-600"></ion-icon>
+            รายการตัวเลือก ({{ variants.length }})
+          </h3>
+
+          <!-- ⚠️ ใช้ form สำหรับ left sidebar เท่านั้น -->
+          <form [formGroup]="form!">
+            <div formArrayName="variants" class="space-y-3">
+              <!-- Variant Cards -->
+              <div
+                *ngFor="let variant of variants.controls; let i = index"
+                [formGroupName]="i"
+                (click)="selectVariant(i)"
+                class="group relative cursor-pointer rounded-xl border-2 p-4 transition-all duration-300"
+                [ngClass]="{
+                  'border-blue-500 bg-blue-50': selectedVariantIndex === i,
+                  'border-gray-200 bg-white hover:border-blue-300':
+                    selectedVariantIndex !== i,
+                }"
+              >
+                <!-- Default Badge -->
+                <div
+                  *ngIf="variant.get('is_default')?.value"
+                  class="absolute -right-2 -top-2 rounded-full bg-green-500 px-2 py-1 text-xs text-white shadow-md"
+                >
+                  เริ่มต้น
+                </div>
+
+                <!-- Image Preview -->
+                <div class="mb-3 flex items-center gap-3">
+                  <div
+                    class="h-16 w-16 shrink-0 overflow-hidden rounded-lg border-2 bg-gray-100"
+                    [ngClass]="{
+                      'border-blue-500': selectedVariantIndex === i,
+                      'border-gray-200': selectedVariantIndex !== i,
+                    }"
+                  >
+                    <img
+                      *ngIf="getVariantImagePreview(i)"
+                      [src]="getVariantImagePreview(i)"
+                      alt="Variant"
+                      class="h-full w-full object-cover"
+                    />
+                    <div
+                      *ngIf="!getVariantImagePreview(i)"
+                      class="flex h-full w-full items-center justify-center text-gray-400"
+                    >
+                      <ion-icon
+                        name="image-outline"
+                        class="text-2xl"
+                      ></ion-icon>
+                    </div>
+                  </div>
+
+                  <div class="min-w-0 flex-1">
+                    <p class="truncate font-semibold text-gray-800">
+                      {{
+                        variant.get('display_name')?.value ||
+                          'ยังไม่ได้ตั้งชื่อ'
+                      }}
+                    </p>
+                    <p class="truncate text-sm text-gray-500">
+                      {{ variant.get('name')?.value || '-' }}
+                    </p>
+                    <p class="mt-1 text-sm font-medium text-blue-600">
+                      ฿{{ variant.get('price')?.value || 0 }}
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Status -->
+                <div class="flex items-center justify-between text-xs">
+                  <span
+                    class="rounded-full px-2 py-1"
+                    [ngClass]="{
+                      'bg-green-100 text-green-700':
+                        variant.get('is_active')?.value,
+                      'bg-red-100 text-red-700':
+                        !variant.get('is_active')?.value,
+                    }"
+                  >
+                    {{
+                      variant.get('is_active')?.value ? 'ใช้งาน' : 'ปิดใช้งาน'
+                    }}
+                  </span>
+
+                  <button
+                    *ngIf="variants.length > 1"
+                    type="button"
+                    (click)="removeVariant(i); $event.stopPropagation()"
+                    class="text-red-500 opacity-0 transition-opacity hover:text-red-700 group-hover:opacity-100"
+                  >
+                    <ion-icon name="trash-outline" class="text-lg"></ion-icon>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Add New Variant Card -->
+              <div
+                (click)="addVariant()"
+                class="cursor-pointer rounded-xl border-2 border-dashed border-blue-300 bg-blue-50 p-6 transition-all duration-300 hover:border-blue-500 hover:bg-blue-100"
+              >
+                <div
+                  class="text-blue-600! flex flex-col items-center justify-center"
+                >
+                  <ion-icon
+                    name="add-circle"
+                    class="text-blue-600! mb-2 text-5xl"
+                  ></ion-icon>
+                  <span class="text-blue-600! font-semibold"
+                    >เพิ่มตัวเลือกใหม่</span
+                  >
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Right Content - Variant Detail -->
+        <div class="flex-1 overflow-y-auto bg-white">
+          <!-- ⚠️ ใช้ form แยกสำหรับ right panel -->
+          <div
+            *ngIf="selectedVariantIndex !== null && getSelectedVariantForm()"
+            class="p-8"
+          >
+            <form [formGroup]="getSelectedVariantForm()!">
+              <!-- ❌ ลบ formArrayName และ formGroupName ออก -->
+
+              <!-- Image Upload Section -->
+              <div class="mb-8">
+                <label
+                  class="mb-4 flex items-center gap-2 text-base font-semibold text-gray-800"
+                >
+                  <ion-icon name="image" class="text-blue-600"></ion-icon>
+                  รูปภาพตัวเลือก
+                  <span class="text-sm font-normal text-gray-500"
+                    >(ไม่บังคับ)</span
+                  >
+                </label>
+
+                <div class="flex items-start gap-6">
+                  <div
+                    (click)="variantFileInput.click()"
+                    class="border-3 group relative h-48 w-48 cursor-pointer overflow-hidden rounded-2xl shadow-md transition-all duration-300 hover:shadow-xl"
+                    [ngClass]="{
+                      'bg-linear-to-br border-blue-400 from-blue-50 to-blue-100':
+                        !getVariantImagePreview(selectedVariantIndex),
+                      'border-gray-300 bg-white hover:border-blue-500':
+                        getVariantImagePreview(selectedVariantIndex),
+                    }"
+                  >
+                    <!-- Preview Image -->
+                    <img
+                      *ngIf="getVariantImagePreview(selectedVariantIndex)"
+                      [src]="getVariantImagePreview(selectedVariantIndex)"
+                      alt="Preview"
+                      style="
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                        z-index: 1;
+                      "
+                    />
+
+                    <!-- Upload Placeholder -->
+                    <div
+                      *ngIf="!getVariantImagePreview(selectedVariantIndex)"
+                      class="flex h-full flex-col items-center justify-center text-blue-600"
+                    >
+                      <ion-icon
+                        name="cloud-upload"
+                        class="mb-2 text-5xl"
+                      ></ion-icon>
+                      <span class="text-sm font-semibold">อัปโหลดรูป</span>
+                    </div>
+
+                    <!-- Hover Overlay -->
+                    <div
+                      *ngIf="getVariantImagePreview(selectedVariantIndex)"
+                      class="absolute inset-0 z-10 flex items-center justify-center bg-black/0 transition-colors duration-300 hover:bg-black/10"
+                    >
+                      <div
+                        class="translate-y-1 text-center opacity-0 transition-all duration-300 hover:translate-y-0 hover:opacity-100"
+                      >
+                        <div
+                          class="mb-2 inline-flex rounded-full bg-white/90 p-3"
+                        >
+                          <ion-icon
+                            name="camera"
+                            class="text-3xl text-blue-600"
+                          ></ion-icon>
+                        </div>
+                        <p class="text-sm font-medium text-white">
+                          เปลี่ยนรูปภาพ
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="flex-1">
+                    <div
+                      class="rounded-xl border border-blue-200 bg-blue-50 p-4"
+                    >
+                      <p class="mb-3 text-sm text-gray-700">
+                        <ion-icon
+                          name="information-circle"
+                          class="text-blue-600!"
+                        ></ion-icon>
+                        รูปภาพจะช่วยให้ลูกค้าเห็นภาพตัวเลือกได้ชัดเจนขึ้น
+                      </p>
+                      <p class="mb-3 text-sm text-gray-700">
+                        <ion-icon
+                          name="information-circle"
+                          class="text-blue-600!"
+                        ></ion-icon>
+                        ถ้าไม่มีรูปภาพ จะใช้รูปภาพเมนูหลักแทน
+                      </p>
+                      <button
+                        *ngIf="getVariantImagePreview(selectedVariantIndex)"
+                        type="button"
+                        (click)="
+                          clearVariantImage(selectedVariantIndex);
+                          $event.stopPropagation()
+                        "
+                        class="flex w-full items-center justify-center gap-2 rounded-lg border-2 border-red-300 bg-white px-4 py-2 font-medium text-red-600 transition-all duration-300 hover:bg-red-50"
+                      >
+                        <ion-icon name="trash" class="text-lg"></ion-icon>
+                        ลบรูปภาพ
+                      </button>
+                    </div>
+                  </div>
+
+                  <input
+                    #variantFileInput
+                    type="file"
+                    accept="image/*"
+                    class="hidden"
+                    (change)="onVariantFileChange($event, selectedVariantIndex)"
+                  />
+                </div>
+              </div>
+
+              <!-- Form Fields -->
+              <div class="space-y-6">
+                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                  <!-- Name -->
+                  <div>
+                    <div class="flex flex-col gap-2">
+                      <label class="font-semibold text-gray-800"
+                        >ชื่อตัวเลือก <span class="text-red-500">*</span></label
+                      >
+                      <input
+                        pInputText
+                        formControlName="name"
+                        placeholder="เช่น ไก่, กุ้ง, หมู"
+                      />
+                    </div>
+                  </div>
+
+                  <!-- Display Name -->
+                  <div>
+                    <div class="flex flex-col gap-2">
+                      <label class="font-semibold text-gray-800">ชื่อที่แสดง <span class="text-red-500">*</span></label>
+                      <input pInputText formControlName="display_name" placeholder="เช่น ข้าวผัดไก่" />
+                    </div>
+                  </div>
+
+                  <!-- Price -->
+                  <div>
+                    <input pInputText type="number" formControlName="price" />
+                  </div>
+
+                  <!-- SKU -->
+                  <div>
+                    <input
+                      pInputText
+                      formControlName="sku"
+                      placeholder="รหัสสินค้า"
+                    />
+                  </div>
+
+                  <!-- Kitchen ID -->
+                  <div class="md:col-span-2">
+                    <div class="flex flex-col gap-2">
+                      <label class="font-semibold text-gray-800"
+                        >รหัสครัว <span class="text-red-500">*</span></label
+                      >
+                      <input
+                        pInputText
+                        formControlName="kitchen_id"
+                        placeholder="รหัสครัว"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Divider -->
+                <div class="my-6 border-t border-gray-200"></div>
+
+                <!-- Toggles -->
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <!-- Is Default -->
+                  <div
+                    class="bg-linear-to-r rounded-xl border-2 border-green-200 from-green-50 to-green-100 p-5"
+                  >
+                    <div class="flex items-center justify-between">
+                      <div class="flex-1">
+                        <label
+                          class="mb-1 flex items-center gap-2 text-sm font-semibold text-gray-800"
+                        >
+                          <ion-icon
+                            name="star"
+                            class="text-green-600"
+                          ></ion-icon>
+                          ตัวเลือกเริ่มต้น
+                        </label>
+                        <p class="text-xs text-gray-600">
+                          ตั้งเป็นตัวเลือกหลักของเมนู
+                        </p>
+                      </div>
+                      <ion-toggle
+                        [checked]="
+                          getSelectedVariantForm()?.get('is_default')?.value
+                        "
+                        (ionChange)="setAsDefault(selectedVariantIndex)"
+                        color="success"
+                        class="ml-4"
+                      ></ion-toggle>
+                    </div>
+                  </div>
+
+                  <!-- Is Active -->
+                  <div
+                    class="bg-linear-to-r rounded-xl border-2 border-blue-200 from-blue-50 to-blue-100 p-5"
+                  >
+                    <div class="flex items-center justify-between">
+                      <div class="flex-1">
+                        <label
+                          class="mb-1 flex items-center gap-2 text-sm font-semibold text-gray-800"
+                        >
+                          <ion-icon
+                            name="power"
+                            class="text-blue-600"
+                          ></ion-icon>
+                          สถานะการใช้งาน
+                        </label>
+                        <p class="text-xs text-gray-600">
+                          เปิด/ปิด การใช้งานตัวเลือกนี้
+                        </p>
+                      </div>
+                      <ion-toggle
+                        formControlName="is_active"
+                        color="primary"
+                        class="ml-4"
+                      ></ion-toggle>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <!-- Empty State -->
+          <div
+            *ngIf="selectedVariantIndex === null"
+            class="flex h-full items-center justify-center p-8"
+          >
+            <div class="text-center">
+              <ion-icon
+                name="arrow-back-circle"
+                class="mb-4 text-8xl text-gray-300"
+              ></ion-icon>
+              <h3 class="mb-2 text-xl font-semibold text-gray-600">
+                เลือกตัวเลือกที่ต้องการแก้ไข
+              </h3>
+              <p class="text-gray-500">
+                คลิกที่รายการด้านซ้ายเพื่อดูรายละเอียด
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #footer>
+  <div class="flex w-full items-center justify-between px-4 py-2">
+    <p-button
+      label="Back"
+      icon="pi pi-arrow-left"
+      styleClass="p-button-text"
+      (click)="goBack()"
+    ></p-button>
+
+    <p-button
+      label="Next"
+      icon="pi pi-arrow-right"
+      iconPos="right"
+      (click)="goNext()"
+    ></p-button>
+  </div>
+</ng-template>

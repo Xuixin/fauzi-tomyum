@@ -1,0 +1,66 @@
+
+// Scrollbar Styling
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+
+  &:hover {
+    background: #94a3b8;
+  }
+}
+
+// Image Upload Specific Styles
+.image-upload-container {
+  position: relative;
+
+  img {
+    // Ensure image displays properly
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+}
+
+// Fix for black preview issue
+input[type="file"] {
+  display: none !important;
+}
+
+// Animation for form elements
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+form {
+  animation: fadeIn 0.5s ease-out;
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  ion-modal.modal-ninety {
+    --width: 95%;
+    --height: 95%;
+  }
+
+  .grid-cols-1.md\\:grid-cols-2 {
+    grid-template-columns: 1fr !important;
+  }
+}
