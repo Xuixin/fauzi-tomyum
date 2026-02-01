@@ -5,15 +5,15 @@
       *ngFor="let step of steps; let i = index"
       class="mb-3 flex cursor-default gap-4 rounded-lg p-4 transition-all duration-300"
       [ngClass]="{
-        'border border-blue-500 bg-blue-100': isStepActive(i),
-        'bg-green-100': isStepCompleted(i),
+        'border border-primary bg-primary/10': isStepActive(i),
+        'bg-green-100 ': isStepCompleted(i),
       }"
     >
       <!-- Indicator -->
       <div
         class="flex h-10 w-10 min-w-[40px] items-center justify-center rounded-full font-semibold text-white transition-all duration-300"
         [ngClass]="{
-          '!text-blue-500 scale-110 bg-blue-200': isStepActive(i),
+          '!text-blue-500 scale-110 bg-primary/10': isStepActive(i),
           'bg-green-200': isStepCompleted(i),
           'bg-gray-200': !isStepActive(i) && !isStepCompleted(i),
         }"

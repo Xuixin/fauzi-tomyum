@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
+import { ImageUploadComponent } from '@shared/component/image-upload/image-upload.component';
 
 interface VariantImagePreview {
   [index: number]: string | null;
@@ -19,12 +20,13 @@ interface VariantImagePreview {
   templateUrl: './variant-info.component.html',
   styleUrls: ['./variant-info.component.scss'],
   standalone: true,
-  imports: [CommonModule, IonicModule, InputTextModule, FormsModule, ReactiveFormsModule, ButtonModule, InputTextModule]
+  imports: [CommonModule, IonicModule, InputTextModule, FormsModule, ReactiveFormsModule, ButtonModule, InputTextModule, ImageUploadComponent]
 })
 export class VariantInfoComponent extends BaseStepComponent implements OnInit {
   private helper!: WorkflowHelper;
 
   parentNameMenu = '';
+  parentMenu: any = null;
   parentImageMenuPreview: string | null = null;
   parentImageMenuFile: File | null = null;
   parentDefaultPrice = 0;
@@ -32,6 +34,27 @@ export class VariantInfoComponent extends BaseStepComponent implements OnInit {
   variantImagePreviews: VariantImagePreview = {};
 
   private objectUrls: string[] = []; // Track created URLs for cleanup
+
+  waterHelperCreateVaraint = [
+    {
+      name: 'ร้อน',
+      price: 0,
+      is_default: true,
+      is_active: true
+    },
+    {
+      name: 'เย็น',
+      price: 0,
+      is_default: false,
+      is_active: true
+    },
+    {
+      name: 'ปั่น',
+      price: 0,
+      is_default: false,
+      is_active: true
+    },
+  ];
 
   constructor(
     protected override workflowStep: WorkflowStepService,
@@ -104,6 +127,7 @@ export class VariantInfoComponent extends BaseStepComponent implements OnInit {
     // โหลดชื่อเมนูจาก menu-info
     if (data && data['menu-info']) {
       const menuData = data['menu-info'];
+      this.parentMenu = menuData;
       this.parentNameMenu = menuData.name || '';
 
 
@@ -222,6 +246,21 @@ export class VariantInfoComponent extends BaseStepComponent implements OnInit {
     this.selectVariant(newIndex);
   }
 
+
+  addHelperVariant() {
+    if (this.parentMenu.type === 'เครื่องดื่ม') {
+      this.waterHelperCreateVaraint.forEach((variant: any) => {
+        const newVariant = this.createVariantFormGroup();
+        newVariant.patchValue(variant);
+        this.variants.push(newVariant);
+      });
+    }
+  }
+
+  isWaterType(): boolean {
+    return this.parentMenu.type === 'เครื่องดื่ม';
+  }
+
   removeVariant(index: number): void {
     if (this.variants.length > 1) {
       // ถ้าลบ variant ที่เลือกอยู่ ให้เลือก variant แรก
@@ -282,11 +321,13 @@ export class VariantInfoComponent extends BaseStepComponent implements OnInit {
       this.variants.at(index).get('imageFile')?.markAsTouched();
 
       // Convert to base64 for preview
-      this.convertFileToBase64(file, index);
+      this.convertFileToBase64AndSetPreview(file, index);
+
+
     }
   }
 
-  private convertFileToBase64(file: File, index: number): void {
+  private convertFileToBase64AndSetPreview(file: File, index: number): void {
     // Refactored to use Object URL
     const url = FileHelper.createObjectURL(file);
     this.objectUrls.push(url);

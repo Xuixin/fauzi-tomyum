@@ -44,7 +44,7 @@ export class MenuOptionsComponent extends BaseStepComponent {
         iconStyle: 'text-white!',
         iconBgColor: 'bg-blue-500',
         buttonColor: 'border-blue-500 bg-blue-100 border-blue-500  hover:border-orange-500 hover:shadow-md',
-        click:() => this.addToppingTemplate()
+        click:() => this.addSweetLevelTemplate()
       },
       name: 'ระดับความหวาน',
       required: true,

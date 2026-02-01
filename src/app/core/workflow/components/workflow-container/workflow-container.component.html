@@ -19,6 +19,8 @@
     </div>
   </ion-header>
 
+
+
   <div
     class="absolute top-0 right-0 z-10"
     *ngIf="!showHeader && showCancelButtonHeader && config"
@@ -31,10 +33,10 @@
   <!-- Content -->
   <ion-content>
     <div class="flex h-full flex-col md:flex-row">
-      <!-- Sidebar -->
+      <!-- Sidebar (this only show in tablet and web) -->
       <aside
         *ngIf="showSidebar && state"
-        class="w-full md:w-72 md:min-w-72 md:max-w-72 bg-[--ion-color-light,#fff] border-b md:border-b-0 md:border-r border-gray-100"
+        class="w-full  hidden md:block md:w-72 md:min-w-72 md:max-w-72 bg-[--ion-color-light,#fff] border-b md:border-b-0 md:border-r border-gray-100"
       >
         <app-workflow-sidebar
           [steps]="config.steps"

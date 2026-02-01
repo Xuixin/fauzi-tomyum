@@ -1,5 +1,5 @@
 <div class="relative"
-ngClass="{{class}}"
+ngClass="{{cssClass}}"
 >
   <!-- Background with border -->
   <div
@@ -14,7 +14,7 @@ ngClass="{{class}}"
   <!-- Clickable Area -->
   <div
     (click)="fileInput.click()"
-    class="absolute inset-0 cursor-pointer overflow-hidden rounded-2xl shadow-md hover:shadow-xl"
+    class="absolute inset-0 cursor-pointer overflow-hidden rounded-2xl border border-primary bg-primary/10 "
   >
     <!-- Preview Image (z-index: 1) -->
     <img
@@ -30,7 +30,7 @@ ngClass="{{class}}"
         object-fit: cover;
         z-index: 1;
       "
-      (load)="onImageLoad()"
+      (load)="onImageLoading()"
       (error)="onImageError($event)"
     />
 
@@ -43,24 +43,44 @@ ngClass="{{class}}"
       <div
         class="mb-3 rounded-full bg-white p-4 shadow-md transition-transform duration-300 hover:scale-110"
       >
-        <ion-icon name="cloud-upload" class="text-5xl"></ion-icon>
+        <ion-icon name="cloud-upload"
+        [ngClass]="{
+          'text-2xl': size === 'sm',
+          'text-5xl': size === 'md' || size === 'lg',
+        }"
+        ></ion-icon>
       </div>
-      <span class="text-base font-semibold">อัปโหลดรูป</span>
-      <span class="mt-1 text-sm text-gray-500">คลิกเพื่อเลือกไฟล์</span>
+
+      <span class="font-semibold"
+      [ngClass]="{
+        'text-xs': size === 'sm',
+        'text-base': size === 'md' || size === 'lg',
+      }"
+      >อัปโหลดรูป</span>
+      <span class="mt-1 text-sm text-gray-500"
+      [ngClass]="{
+        'text-xs': size === 'sm',
+        'text-sm': size === 'md' || size === 'lg',
+      }"
+
+      >คลิกเพื่อเลือกไฟล์</span>
     </div>
 
     <!-- Hover Overlay (z-index: 10 - อยู่บนสุด) -->
+    <!-- Hover Overlay (z-index: 10 - อยู่บนสุด) -->
     <div
       *ngIf="imageDisplay"
-      class="absolute inset-0 z-10 flex items-center justify-center bg-black/0 transition-colors duration-300 hover:bg-black/10"
+      class="absolute inset-0 z-10 flex items-center justify-center bg-black/0  transition-all duration-300 opacity-0 hover:opacity-100 hover:bg-black/10"
+      (click)="onClear($event)"
     >
       <div
-        class="translate-y-1 text-center opacity-0 transition-all duration-300 hover:translate-y-0 hover:opacity-100"
+        class="translate-y-1 text-center hover:opacity-100"
       >
-        <div class="mb-2 inline-flex rounded-full bg-white/90 p-3">
-          <ion-icon name="camera" class="text-3xl text-blue-600"></ion-icon>
+        <div class="mb-2 inline-flex rounded-full bg-white/90 p-3 shadow-sm hover:bg-red-50">
+          <!-- เปลี่ยนไอคอนเป็น trash/close -->
+          <ion-icon name="close-outline" class="text-3xl text-red-500"></ion-icon>
         </div>
-        <p class="text-sm font-medium text-white">เปลี่ยนรูปภาพ</p>
+        <p class="text-sm font-medium text-white drop-shadow-md">ลบรูปภาพ</p>
       </div>
     </div>
   </div>

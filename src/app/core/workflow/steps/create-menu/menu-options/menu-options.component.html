@@ -99,10 +99,10 @@
               <div class="mb-6">
                 <div class="flex flex-col gap-2">
                   <label class="font-semibold text-gray-800">ชื่อกลุ่มตัวเลือก <span class="text-red-500">*</span></label>
-                  <input 
-                    pInputText 
-                    formControlName="name" 
-                    placeholder="เช่น ระดับความหวาน, ท็อปปิ้ง, ขนาด" 
+                  <input
+                    pInputText
+                    formControlName="name"
+                    placeholder="เช่น ระดับความหวาน, ท็อปปิ้ง, ขนาด"
                     class="w-full"
                   />
                 </div>
@@ -200,6 +200,7 @@
                         formControlName="name"
                         placeholder="ชื่อตัวเลือก"
                         class="w-full rounded-l-lg! rounded-r-none! m-0!"
+                        style="border-end-end-radius: 0 !important; border-start-end-radius: 0 !important; border-right: none;"
                       />
                     </div>
 
@@ -211,6 +212,8 @@
                         formControlName="price"
                         placeholder="ราคา"
                         class="w-full rounded-l-none! rounded-r-lg! border-l-0! m-0!"
+
+                        style="border-end-start-radius: 0 !important; border-start-start-radius: 0 !important;"
                       />
                     </div>
 
@@ -361,16 +364,16 @@
 </div>
 
 <ng-template #footer>
-  <div class="flex w-full items-center justify-between px-4 py-2">
+   <div class="flex justify-end space-x-4 px-8 py-4 !border-t !border-gray-200">
     <p-button
-      label="Back"
+      [label]="prevLabel()"
       icon="pi pi-arrow-left"
-      styleClass="p-button-text"
+      [outlined]="true"
       (click)="goBack()"
     ></p-button>
 
     <p-button
-      label="Next"
+      [label]="nextLabel()"
       icon="pi pi-arrow-right"
       iconPos="right"
       (click)="goNext()"

@@ -1,7 +1,7 @@
 // src/app/workflow/core/base/base-step.component.ts
 
 import { Directive, OnInit, OnDestroy, Input, OnChanges, SimpleChanges, ViewChild, TemplateRef, AfterViewInit, computed } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormArray, FormGroup } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { WorkflowStepService } from './../services/workflow-step';
@@ -25,6 +25,11 @@ export abstract class BaseStepComponent<T = any> implements OnInit, OnChanges, O
   protected nextLabel = computed(() => {
     const currentStep = this.workflowStep.getCurrentStepConfig()();
     return currentStep?.nextButton?.label || 'ถัดไป';
+  });
+
+  protected prevLabel = computed(() => {
+    const currentStep = this.workflowStep.getCurrentStepConfig()();
+    return currentStep?.backButton?.label || 'ก่อนหน้า';
   });
 
   constructor(protected workflowStep: WorkflowStepService) {}
@@ -53,6 +58,20 @@ export abstract class BaseStepComponent<T = any> implements OnInit, OnChanges, O
       });
     }
   }
+
+
+  protected isValid(controlName: string) {
+    return this.form?.get(controlName)?.valid;
+  }
+
+  protected isValidInArray(
+  arrayName: string,
+  index: number,
+  controlName: string
+): boolean {
+  const array = this.form?.get(arrayName) as FormArray | null;
+  return !!array?.at(index)?.get(controlName)?.valid;
+}
 
   /**
    * Lifecycle: NgOnChanges
@@ -121,7 +140,7 @@ export abstract class BaseStepComponent<T = any> implements OnInit, OnChanges, O
       this.form.patchValue(dataToLoad, { emitEvent: false });
 
       for (const controlName in dataToLoad) {
-
+        console.log(controlName)
       }
 
 

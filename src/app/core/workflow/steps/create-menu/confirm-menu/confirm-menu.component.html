@@ -307,19 +307,19 @@
 </div>
 
 <ng-template #footer>
-  <div class="flex items-center justify-between w-full px-4 py-2">
+  <div class="flex justify-end space-x-4 px-8 py-4 !border-t !border-gray-200">
     <p-button
-      label="Back"
+      [label]="prevLabel()"
       icon="pi pi-arrow-left"
-      styleClass="p-button-text"
+      [outlined]="true"
       (click)="goBack()"
     ></p-button>
-    
+
     <p-button
-      label="Confirm"
+      [label]="nextLabel()"
       icon="pi pi-check"
       iconPos="right"
-      styleClass="p-button-success"
+      severity="success"
       (click)="goNext()"
     ></p-button>
   </div>

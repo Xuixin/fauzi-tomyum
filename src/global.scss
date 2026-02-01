@@ -188,6 +188,14 @@ ion-modal.modal-fixed-w-50 {
   --border-radius: 8px;
 }
 
+@media screen and (max-width: 768px) {
+  ion-modal.modal-ninety {
+    --height: 100%;
+    --width: 100%;
+    --border-radius: 8px;
+  }
+}
+
 /**
  * Overlay Modals For Circle Loading & Status Notification
  * -----------------------------------------------------

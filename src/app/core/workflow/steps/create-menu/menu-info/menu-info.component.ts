@@ -10,13 +10,23 @@ import { IonicModule } from '@ionic/angular';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { ImageUploadComponent } from '@shared/component/image-upload/image-upload.component';
+import { ChipModule } from 'primeng/chip';
 
 @Component({
   selector: 'app-menu-info',
   templateUrl: './menu-info.component.html',
   styleUrls: ['./menu-info.component.scss'],
   standalone: true,
-  imports: [CommonModule, IonicModule, InputTextModule, ButtonModule, FormsModule, ReactiveFormsModule, ImageUploadComponent]
+  imports: [
+    CommonModule,
+    IonicModule,
+    InputTextModule,
+    ButtonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    ImageUploadComponent,
+    ChipModule
+  ]
 })
 export class MenuInfoComponent extends BaseStepComponent implements OnInit {
   private helper!: WorkflowHelper;
@@ -217,7 +227,7 @@ export class MenuInfoComponent extends BaseStepComponent implements OnInit {
 
   // เพิ่ม method เพื่อตรวจสอบการโหลดรูป
   onImageLoad(): void {
-    console.log('✅ Image loaded successfully in DOM');
+
   }
 
   onImageError(event: Event): void {
@@ -231,11 +241,16 @@ export class MenuInfoComponent extends BaseStepComponent implements OnInit {
     this.form?.get('imageFile')?.setValue(null);
     this.form?.get('imageFile')?.markAsTouched();
 
+    this.cdr.detectChanges();
+
     // อัพเดท step data
     this.updateStepData({
       ...this.form?.value,
       imageDisplay: null
     });
+
+
+    console.log(this.form?.value)
   }
 
   // Helper method เพื่ออัพเดท step data

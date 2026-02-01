@@ -1,6 +1,6 @@
 <div class="flex h-full flex-col">
   <!-- Form Content -->
-  <div class="flex-1 px-8">
+  <div class="flex-1 px-0 md:px-8">
     <div class="mx-auto">
       <form [formGroup]="form!">
         <div class="space-y-8 rounded-2xl bg-white p-8">
@@ -11,19 +11,26 @@
             >
               <ion-icon name="image" class="text-blue-600"></ion-icon>
               รูปภาพ
-              <span class="text-red-500 text-lg">*</span>
+              <span class="text-lg text-red-500">*</span>
             </label>
 
-            <div class="flex items-start gap-6">
+            <div
+              class="flex flex-col items-center gap-6 md:flex-row md:items-start"
+            >
               <!-- Image Preview/Upload Area -->
               <app-image-upload
+                #menuImageUpload
                 [imageDisplay]="imageDisplay"
                 (imageChange)="onFileChange($event)"
+                (clear)="clearImage()"
+                [size]="'md'"
               ></app-image-upload>
 
               <!-- Upload Instructions -->
-              <div class="flex-1">
-                <div class="rounded-xl border border-blue-200 bg-blue-50 p-5">
+              <div class="w-full flex-1 flex flex-col gap-2 md:w-full">
+                <div
+                  class="w-full rounded-xl border border-blue-200 bg-primary/10 p-5 md:w-full"
+                >
                   <h4
                     class="mb-3 flex items-center gap-2 font-semibold text-gray-800"
                   >
@@ -56,23 +63,20 @@
                       <span>แนะนำขนาดภาพ 800x800 พิกเซล</span>
                     </li>
                   </ul>
-
-                  <!-- Clear Image Button -->
-                  <button
-                    *ngIf="imageDisplay"
-                    pButton
-                    type="button"
-                    label="ลบรูปภาพ"
-                    icon="pi pi-trash"
-                    severity="danger"
-                    outlined="true"
-                    class="mt-4 w-full"
-                    (click)="clearImage(); $event.stopPropagation()"
-                  ></button>
                 </div>
+                <!-- Change Image Button (เมื่อมีรูปแล้ว) -->
+                <p-button
+                  *ngIf="imageDisplay"
+                  type="button"
+                  label="อัปโหลดรูปใหม่"
+                  icon="pi pi-cloud-upload"
+                  [outlined]="true"
+                  class="mt-4 w-full"
+                  (click)="
+                    menuImageUpload.triggerUpload(); $event.stopPropagation()
+                  "
+                ></p-button>
               </div>
-
-            
             </div>
 
             <!-- Error Message -->
@@ -94,58 +98,80 @@
           <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
             <!-- Type -->
             <div class="space-y-2">
+              <label for="type" class="text-sm text-gray-600"
+                >ประเภทอาหาร</label
+              >
               <input
                 pInputText
                 type="text"
-                label="ประเภทอาหาร"
-                placeholder="ประเภทอาหาร"
+                placeholder="เช่น อาหาร, เครื่องดื่ม"
                 formControlName="type"
                 (focus)="showType = true"
                 (blur)="showType = false"
               />
 
-              <div class="flex flex-wrap gap-2" *ngIf="showType">
-                <div
-                  *ngFor="let item of helperTypeSelect"
-                  class="cursor-pointer"
-                  (click)="onClickTypeHelper(item)"
-                >
-                  <p-button [label]="item.name" shape="round"></p-button>
+              <div class="mt-2 space-y-2" *ngIf="!isValid('type')">
+                <p class="mb-3 text-xs text-gray-500">เลือกที่ใช้บ่อย</p>
+                <div class="flex flex-wrap gap-2">
+                  <p-chip
+                    *ngFor="let item of helperTypeSelect"
+                    [label]="item.name"
+                    [style]="{
+                      fontSize: '13px',
+                      cursor: 'pointer',
+                      borderRadius: '16px',
+                      padding: '0.5rem 0.875rem',
+                    }"
+                    styleClass="hover:bg-primary-100"
+                    (click)="onClickTypeHelper(item)"
+                  ></p-chip>
                 </div>
               </div>
             </div>
 
             <!-- Sub Type -->
             <div class="space-y-2">
+              <label for="sub_type" class="text-sm text-gray-600">หมวด</label>
               <input
                 pInputText
                 type="text"
-                placeholder="ประเภทย่อย"
+                placeholder="เช่น กาแฟ, น้ำ"
                 formControlName="sub_type"
                 (focus)="showSubType = true"
                 (blur)="showSubType = false"
               />
 
-              <div class="flex flex-wrap gap-2" *ngIf="showSubType">
-                <div
-                  *ngFor="let item of subType"
-                  class="cursor-pointer"
-                  (click)="onClickSubTypeHelper(item)"
-                >
-                  <p-button [label]="item.name" shape="round"></p-button>
+              <div
+                class="mt-2 space-y-2"
+                *ngIf="!isValid('sub_type') && isValid('type')"
+              >
+                <p class="mb-3 text-xs text-gray-500">เลือกที่ใช้บ่อย</p>
+                <div class="flex flex-wrap gap-2">
+                  <p-chip
+                    *ngFor="let item of subType"
+                    [label]="item.name"
+                    [style]="{
+                      fontSize: '13px',
+                      cursor: 'pointer',
+                      borderRadius: '16px',
+                      padding: '0.5rem 0.875rem',
+                    }"
+                    styleClass="hover:bg-primary-100"
+                    (click)="onClickSubTypeHelper(item)"
+                  ></p-chip>
                 </div>
               </div>
             </div>
-          </div>
 
-          <!-- Menu Name (Full Width) -->
-          <div class="space-y-2">
-            <input
-              pInputText
-              type="text"
-              placeholder="ชื่อเมนู"
-              formControlName="name"
-            />
+            <div class="col-span-2 space-y-2">
+              <label for="name" class="text-sm text-gray-600">ชื่อเมนู</label>
+              <input
+                pInputText
+                type="text"
+                placeholder="เช่น ข้าวผัดกะเพรา"
+                formControlName="name"
+              />
+            </div>
           </div>
 
           <!-- Divider -->
@@ -153,14 +179,14 @@
 
           <!-- Is Active Toggle -->
           <div
-            class="bg-linear-to-r rounded-xl border-2 border-gray-200 from-gray-50 to-gray-100 p-6 transition-all duration-300 hover:border-blue-300"
+            class="rounded-xl border border-green-500 bg-green-500/10 p-6 transition-all duration-300"
           >
             <div class="flex items-center justify-between">
               <div class="flex-1">
                 <label
                   class="mb-2 flex items-center gap-2 text-base font-semibold text-gray-800"
                 >
-                  <ion-icon name="power" class="text-blue-600"></ion-icon>
+                  <ion-icon name="power" class="text-green-600"></ion-icon>
                   สถานะการใช้งาน
                 </label>
                 <p class="text-sm text-gray-600">
@@ -170,7 +196,7 @@
               <div class="ml-6">
                 <ion-toggle
                   formControlName="is_active"
-                  color="primary"
+                  color="success"
                   class="scale-125"
                 ></ion-toggle>
               </div>
@@ -183,7 +209,7 @@
 </div>
 
 <ng-template #footer>
-  <div class="flex justify-end px-8 py-4 !border-t !border-gray-200">
+  <div class="flex justify-end !border-t !border-gray-200 px-8 py-4">
     <p-button
       [label]="nextLabel()"
       icon="pi pi-arrow-right"
